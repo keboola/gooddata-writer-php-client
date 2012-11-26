@@ -1,0 +1,286 @@
+{
+    "name": "Keboola GoodData Writer",
+    "apiVersion": "2012-11-26",
+    "baseUrl": "https://gooddata-writer.keboola.com",
+    "description": "Keboola GoodData Writer API PHP Client",
+    "operations": {
+        "UploadProject": {
+            "httpMethod": "POST",
+            "uri": "/upload-project",
+            "summary": "Upload whole project to GoodData",
+            "responseClass": "UploadOutput",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "incrementalLoad": {
+                    "location": "json",
+                    "type": "bool",
+                    "required": false,
+                    "default": false
+                },
+                "sanitize": {
+                    "location": "json",
+                    "type": "bool",
+                    "required": false,
+                    "default": true
+                }
+            }
+        },
+        "UploadTable": {
+            "httpMethod": "POST",
+            "uri": "/upload-table",
+            "summary": "Upload table to GoodData",
+            "responseClass": "UploadOutput",
+            "parameters": {
+                "table": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "incrementalLoad": {
+                    "location": "json",
+                    "type": "bool",
+                    "required": false,
+                    "default": false
+                },
+                "sanitize": {
+                    "location": "json",
+                    "type": "bool",
+                    "required": false,
+                    "default": true
+                }
+            }
+        },
+        "Xml": {
+            "httpMethod": "GET",
+            "uri": "/xml",
+            "summary": "Get configuration xml of selected table",
+            "responseType": "primitive",
+            "parameters": {
+                "table": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "DeleteWriter": {
+            "httpMethod": "DELETE",
+            "uri": "/delete-writer",
+            "summary": "Removes writer configuration from Storage API and schedules removal of GoodData project",
+            "responseType": "BasicOutput",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "jobsList": {
+            "httpMethod": "GET",
+            "uri": "/jobs",
+            "summary": "Get jobs list",
+            "responseType": "JobsListOutput",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "count": {
+                    "location": "json",
+                    "type": "int",
+                    "required": false
+                },
+                "offset": {
+                    "location": "json",
+                    "type": "int",
+                    "required": false
+                }
+            }
+        },
+        "batchStatus": {
+            "httpMethod": "GET",
+            "uri": "/batch",
+            "summary": "Get jobs batch status",
+            "responseType": "BatchStatusOutput",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "jobStatus": {
+            "httpMethod": "GET",
+            "uri": "/job",
+            "summary": "Get job status",
+            "responseType": "JobStatusOutput",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "jobXml": {
+            "httpMethod": "GET",
+            "uri": "/job",
+            "summary": "Get job status",
+            "responseType": "primitive",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "detail": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true,
+                    "default": "xml",
+                    "static": true
+                }
+            }
+        },
+        "jobCsv": {
+            "httpMethod": "GET",
+            "uri": "/job",
+            "summary": "Get job status",
+            "responseType": "primitive",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "detail": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true,
+                    "default": "csv",
+                    "static": true
+                }
+            }
+        }
+    },
+    "models": {
+        "BasicOutput": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "location": "json",
+                    "type": "string"
+                }
+            }
+        },
+        "UploadOutput": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "batch": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "jobs": {
+                    "location": "json",
+                    "type": "array"
+                }
+            }
+        },
+        "JobsListOutput": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "jobs": {
+                    "location": "json",
+                    "type": "array"
+                }
+            }
+        },
+        "BatchStatusOutput": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "createdTime": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "jobs": {
+                    "location": "json",
+                    "type": "array"
+                }
+            }
+        },
+        "JobStatusOutput": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "id": {
+                    "location": "json",
+                    "type": "int"
+                },
+                "idBatch": {
+                    "location": "json",
+                    "type": "int"
+                },
+                "command": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "dataset": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "createdTime": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "finishedTime": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "jobStatus": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "logFile": {
+                    "location": "json",
+                    "type": "string"
+                },
+                "outputFile": {
+                    "location": "json",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
