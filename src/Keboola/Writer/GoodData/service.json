@@ -61,17 +61,17 @@
         },
         "Xml": {
             "httpMethod": "GET",
-            "uri": "/xml",
+            "uri": "/xml?table={table}&writerId={writerId}",
             "summary": "Get configuration xml of selected table",
             "responseType": "primitive",
             "parameters": {
                 "table": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
                     "required": true
                 },
                 "writerId": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
                     "required": true
                 }
@@ -90,68 +90,83 @@
                 }
             }
         },
-        "jobsList": {
+        "JobsList": {
             "httpMethod": "GET",
-            "uri": "/jobs",
+            "uri": "/jobs?writerId={writerId}&count={count}&offset={offset}",
             "summary": "Get jobs list",
             "responseType": "JobsListOutput",
             "parameters": {
                 "writerId": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
                     "required": true
                 },
                 "count": {
-                    "location": "json",
+                    "location": "query",
                     "type": "int",
                     "required": false
                 },
                 "offset": {
-                    "location": "json",
+                    "location": "query",
                     "type": "int",
                     "required": false
                 }
             }
         },
-        "batchStatus": {
+        "BatchStatus": {
             "httpMethod": "GET",
-            "uri": "/batch",
+            "uri": "/batch/{batch}?writerId={writerId}",
             "summary": "Get jobs batch status",
             "responseType": "BatchStatusOutput",
             "parameters": {
                 "writerId": {
-                    "location": "json",
+                    "location": "query",
+                    "type": "string",
+                    "required": true
+                },
+                "batch": {
+                    "location": "query",
                     "type": "string",
                     "required": true
                 }
             }
         },
-        "jobStatus": {
+        "JobStatus": {
             "httpMethod": "GET",
-            "uri": "/job",
+            "uri": "/job/{job}?writerId={writerId}",
             "summary": "Get job status",
             "responseType": "JobStatusOutput",
             "parameters": {
                 "writerId": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
+                    "required": true
+                },
+                "job": {
+                    "location": "query",
+                    "type": "int",
                     "required": true
                 }
             }
         },
-        "jobXml": {
+        "JobXml": {
             "httpMethod": "GET",
-            "uri": "/job",
+            "uri": "/job/{job}?writerId={writerId}&detail=xml",
             "summary": "Get job status",
             "responseType": "primitive",
             "parameters": {
                 "writerId": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
                     "required": true
                 },
+                "job": {
+                    "location": "query",
+                    "type": "int",
+                    "required": true
+                },
                 "detail": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
                     "required": true,
                     "default": "xml",
@@ -159,19 +174,24 @@
                 }
             }
         },
-        "jobCsv": {
+        "JobCsv": {
             "httpMethod": "GET",
-            "uri": "/job",
+            "uri": "/job/{job}?writerId={writerId}&detail=csv",
             "summary": "Get job status",
             "responseType": "primitive",
             "parameters": {
                 "writerId": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
                     "required": true
                 },
+                "job": {
+                    "location": "query",
+                    "type": "int",
+                    "required": true
+                },
                 "detail": {
-                    "location": "json",
+                    "location": "query",
                     "type": "string",
                     "required": true,
                     "default": "csv",

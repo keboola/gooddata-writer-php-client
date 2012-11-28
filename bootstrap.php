@@ -1,6 +1,7 @@
 <?php
 // Define path to application directory
-define('ROOT_PATH', __DIR__);
+if (!defined('ROOT_PATH'))
+	define('ROOT_PATH', __DIR__);
 
 // Ensure library/ is on include_path
 set_include_path(implode(PATH_SEPARATOR, array(
