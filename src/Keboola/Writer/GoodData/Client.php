@@ -78,7 +78,7 @@ class Client extends GuzzleClient
 	 */
 	public function uploadTable($table, $writerId, $incrementalLoad = null, $sanitize = null)
 	{
-		return $this->getCommand('UploadProject', array(
+		return $this->getCommand('UploadTable', array(
 			'table' => $table,
 			'writerId' => $writerId,
 			'incrementalLoad' => $incrementalLoad,
@@ -123,19 +123,21 @@ class Client extends GuzzleClient
 	{
 		return $this->getCommand('JobsList', array(
 			'writerId' => $writerId,
-			'count' => $count,
-			'offset' => $offset
+			'count' => (int)$count,
+			'offset' => (int)$offset
 		))->execute();
 	}
 
 	/**
 	 * Return detail of given batch
+	 * @param $batch
 	 * @param $writerId
 	 * @return mixed
 	 */
-	public function batch($writerId)
+	public function batch($batch, $writerId)
 	{
 		return $this->getCommand('BatchStatus', array(
+			'batch' => (int)$batch,
 			'writerId' => $writerId
 		))->execute();
 	}
@@ -149,7 +151,7 @@ class Client extends GuzzleClient
 	public function job($job, $writerId)
 	{
 		return $this->getCommand('JobStatus', array(
-			'job' => $job,
+			'job' => (int)$job,
 			'writerId' => $writerId
 		))->execute();
 	}
@@ -163,7 +165,7 @@ class Client extends GuzzleClient
 	public function jobXml($job, $writerId)
 	{
 		return $this->getCommand('JobXml', array(
-			'job' => $job,
+			'job' => (int)$job,
 			'writerId' => $writerId
 		))->execute();
 	}
@@ -177,7 +179,7 @@ class Client extends GuzzleClient
 	public function jobCsv($job, $writerId)
 	{
 		return $this->getCommand('JobCsv', array(
-			'job' => $job,
+			'job' => (int)$job,
 			'writerId' => $writerId
 		))->execute();
 	}

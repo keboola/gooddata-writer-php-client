@@ -12,8 +12,8 @@ ini_set('display_errors', true);
 
 date_default_timezone_set('Europe/Prague');
 
-if (file_exists('config.php')) {
-	require_once 'config.php';
+if (file_exists(ROOT_PATH . '/config.php')) {
+	require_once ROOT_PATH . '/config.php';
 }
 
 defined('GOODDATA_WRITER_API_URL')

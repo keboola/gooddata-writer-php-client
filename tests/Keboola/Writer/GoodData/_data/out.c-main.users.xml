@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<schema>
+	<name>Users</name>
+	<columns>
+		<column>
+			<name>id</name>
+			<title>id (Users)</title>
+			<ldmType>CONNECTION_POINT</ldmType>
+			<folder>Users</folder>
+		</column>
+		<column>
+			<name>name</name>
+			<title>name (Users)</title>
+			<ldmType>ATTRIBUTE</ldmType>
+			<folder>Users</folder>
+		</column>
+		<column>
+			<name>email</name>
+			<title>email (Users)</title>
+			<ldmType>ATTRIBUTE</ldmType>
+			<folder>Users</folder>
+		</column>
+		<column>
+			<name>phone</name>
+			<title>phone (Users)</title>
+			<ldmType>ATTRIBUTE</ldmType>
+			<folder>Users</folder>
+		</column>
+	</columns>
+</schema>

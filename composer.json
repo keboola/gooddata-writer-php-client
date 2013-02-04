@@ -6,6 +6,7 @@
         "psr-0": {"Keboola": "src/"}
     },
 	"require": {
-        "guzzle/guzzle": "3.0.*"
+        "guzzle/guzzle": "3.0.*",
+        "keboola/storage-api-client": "2.5.*"
 	}
 }
