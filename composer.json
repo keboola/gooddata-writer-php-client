@@ -1,12 +1,12 @@
 {
-	"name": "keboola/gooddata-writer-api-client",
-	"description": "Keboola GoodData Writer API PHP Client",
-	"homepage": "http://keboola.com",
+	"name": "keboola/gooddata-writer-php-client",
+	"description": "PHP Client for KBC GoodData Writer",
+	"homepage": "https://connection.keboola.com",
 	"autoload": {
         "psr-0": {"Keboola": "src/"}
     },
 	"require": {
-        "guzzle/guzzle": "3.0.*",
+        "guzzle/guzzle": "3.1.*",
         "keboola/storage-api-client": "2.5.*"
 	}
 }
