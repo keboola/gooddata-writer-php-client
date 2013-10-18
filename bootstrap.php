@@ -17,7 +17,7 @@ if (file_exists(ROOT_PATH . '/config.php')) {
 }
 
 defined('GOODDATA_WRITER_API_URL')
-	|| define('GOODDATA_WRITER_API_URL', getenv('GOODDATA_WRITER_API_URL') ? getenv('GOODDATA_WRITER_API_URL') : 'https://gooddata-writer.keboola.com');
+	|| define('GOODDATA_WRITER_API_URL', getenv('GOODDATA_WRITER_API_URL') ? getenv('GOODDATA_WRITER_API_URL') : 'https://syrup.keboola.com/gooddata-writer');
 
 defined('STORAGE_API_TOKEN')
 	|| define('STORAGE_API_TOKEN', getenv('STORAGE_API_TOKEN') ? getenv('STORAGE_API_TOKEN') : 'your_token');
