@@ -38,6 +38,165 @@
 				}
 			}
 		},
+		"GetUsers": {
+			"httpMethod": "GET",
+			"uri": "users?writerId={writerId}",
+			"summary": "Get list of configured users",
+			"parameters": {
+				"writerId": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				}
+			}
+		},
+		"CreateUser": {
+			"httpMethod": "POST",
+			"uri": "users",
+			"summary": "Create user",
+			"parameters": {
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"email": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"password": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"firstName": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"lastName": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"queue": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				}
+			}
+		},
+		"GetProjects": {
+			"httpMethod": "GET",
+			"uri": "projects?writerId={writerId}",
+			"summary": "Get list of configured project clones",
+			"parameters": {
+				"writerId": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				}
+			}
+		},
+		"CreateProject": {
+			"httpMethod": "POST",
+			"uri": "projects",
+			"summary": "Create project",
+			"parameters": {
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"name": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"accessToken": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"queue": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				}
+			}
+		},
+		"GetProjectUsers": {
+			"httpMethod": "GET",
+			"uri": "project-users?writerId={writerId}&pid={pid}",
+			"summary": "Get list of users added to specific project clone",
+			"parameters": {
+				"writerId": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				},
+				"pid": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				}
+			}
+		},
+		"AddUserToProject": {
+			"httpMethod": "POST",
+			"uri": "project-users",
+			"summary": "Add user to project",
+			"parameters": {
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"pid": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"email": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"role": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"queue": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				}
+			}
+		},
+		"GetSSO": {
+			"httpMethod": "GET",
+			"uri": "sso?writerId={writerId}&pid={pid}&email={email}",
+			"summary": "Generate SSO link to GD project for specified user",
+			"parameters": {
+				"writerId": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				},
+				"pid": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				},
+				"email": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				}
+			}
+		},
         "UploadProject": {
             "httpMethod": "POST",
             "uri": "upload-project",

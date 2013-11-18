@@ -7,8 +7,6 @@
 
 namespace Keboola\Writer\GoodData;
 
-use Keboola\StorageApi\Client as StorageApiClient,
-	Keboola\StorageApi\Table as StorageApiTable;
 
 require_once 'config.php';
 
@@ -25,31 +23,38 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 			'url' => FUNCTIONAL_GOODDATA_WRITER_API_URL,
 			'token' => FUNCTIONAL_STORAGE_API_TOKEN
 		));
+
+		foreach ($this->_client->getWriters() as $writer) {
+			if ($writer['id'] != FUNCTIONAL_WRITER_ID) {
+				$this->_client->deleteWriter($writer['id']);
+			}
+		}
 	}
 
 	public function testUploadProject()
 	{
 		$result = $this->_client->uploadProject(FUNCTIONAL_WRITER_ID);
-		$this->assertArrayHasKey('status', $result, "Result of API call 'upload-project' should contain 'status' key");
-		$this->assertEquals('ok', $result['status'], "Result of API call 'upload-project' should contain 'status' key with value 'ok'");
 		$this->assertArrayHasKey('batch', $result, "Result of API call 'upload-project' should contain 'batch' key");
-		$batchId = $result['batch'];
-
-		$jobsFinished = false;
-		$i = 1;
-		do {
-			$jobsInfo = $this->_client->batch(FUNCTIONAL_WRITER_ID, $batchId);
-			$this->assertArrayHasKey('batch', $jobsInfo, "Result of API call 'batch' should contain 'batch' key");
-			$this->assertArrayHasKey('status', $jobsInfo['batch'], "Result of API call 'batch' should contain 'batch.status' key");
-			if (isset($jobsInfo['batch']['status']) && !in_array($jobsInfo['batch']['status'], array('waiting', 'processing'))) {
-				$jobsFinished = true;
-			}
-			if (!$jobsFinished) sleep($i * 10);
-			$i++;
-		} while(!$jobsFinished);
-
-		$this->assertEquals('success', $jobsInfo['batch']['status'], "Result of 'upload-project' call should be success");
+		$this->assertArrayHasKey('status', $result['batch'], "Result of API call 'upload-project' should contain 'batch.status' key");
+		$this->assertEquals('success', $result['batch']['status'], "Result of API call 'upload-project' should contain 'batch.status' key with value 'success'");
 	}
 
+	public function testCreateUserAndProject()
+	{
+		$writerId = 'test' . uniqid();
+		$this->_client->createWriter($writerId);
+
+		$email = uniqid() . '@' . uniqid() . '.com';
+		$result = $this->_client->createUser(FUNCTIONAL_WRITER_ID, $email, uniqid(), 'functional', 'test user');
+		$this->assertArrayHasKey('uid', $result, "Result of createUser request should return uid of created user");
+
+		$result = $this->_client->createProject(FUNCTIONAL_WRITER_ID, 'Test ' . uniqid());
+		$this->assertArrayHasKey('pid', $result, "Result of createProject request should return pid of created project");
+		$pid = $result['pid'];
+
+		$result = $this->_client->addUserToProject(FUNCTIONAL_WRITER_ID, $pid, $email);
+		$this->assertArrayHasKey('status', $result, "Result of addUserToProject request should return status");
+		$this->assertEquals('ok', $result['status'], "Result of addUserToProject request should contain 'status' key with value 'success'");
+	}
 
 }
