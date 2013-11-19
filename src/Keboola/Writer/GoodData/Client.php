@@ -294,15 +294,20 @@ class Client extends GuzzleClient
 	 * @param $writerId
 	 * @param $pid
 	 * @param $email
+	 * @throws ClientException
 	 * @return string
 	 */
 	public function getSsoLink($writerId, $pid, $email)
 	{
-		return $this->getCommand('GetSSOLink', array(
+		$result = $this->getCommand('GetSSOLink', array(
 			'writerId' => $writerId,
 			'pid' => $pid,
 			'email' => $email
 		))->execute();
+		if (!isset($result['ssoLink'])) {
+			throw new ClientException('Getting SSO link failed. ' . (isset($result['error']) ? $result['error'] : ''));
+		}
+		return $result['ssoLink'];
 	}
 
 
