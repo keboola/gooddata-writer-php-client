@@ -105,27 +105,11 @@ class Client extends GuzzleClient
 	 * @param $writerId
 	 * @return mixed
 	 */
-	public function deleteWriterAsync($writerId)
+	public function deleteWriter($writerId)
 	{
 		return $this->getCommand('DeleteWriter', array(
 			'writerId' => $writerId
 		))->execute();
-	}
-
-	/**
-	 * Delete writer and wait for finish
-	 * @param $writerId
-	 * @throws ServerException
-	 * @return mixed
-	 */
-	public function deleteWriter($writerId)
-	{
-		$job = $this->deleteWriterAsync($writerId);
-		if (!isset($job['job'])) {
-			throw new ServerException('Delete writer job returned unexpected result');
-		}
-
-		return $this->_waitForJob($writerId, $job['job']);
 	}
 
 
@@ -303,6 +287,22 @@ class Client extends GuzzleClient
 		}
 
 		return $this->_waitForJob($writerId, $job['job']);
+	}
+
+	/**
+	 * Generate SSO link for configured project and user
+	 * @param $writerId
+	 * @param $pid
+	 * @param $email
+	 * @return string
+	 */
+	public function getSsoLink($writerId, $pid, $email)
+	{
+		return $this->getCommand('GetSSOLink', array(
+			'writerId' => $writerId,
+			'pid' => $pid,
+			'email' => $email
+		))->execute();
 	}
 
 

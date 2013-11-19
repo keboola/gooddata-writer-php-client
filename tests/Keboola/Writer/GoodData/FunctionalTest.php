@@ -45,16 +45,21 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 		$this->_client->createWriter($writerId);
 
 		$email = uniqid() . '@' . uniqid() . '.com';
-		$result = $this->_client->createUser(FUNCTIONAL_WRITER_ID, $email, uniqid(), 'functional', 'test user');
+		$result = $this->_client->createUser($writerId, $email, uniqid(), 'functional', 'test user');
 		$this->assertArrayHasKey('uid', $result, "Result of createUser request should return uid of created user");
 
-		$result = $this->_client->createProject(FUNCTIONAL_WRITER_ID, 'Test ' . uniqid());
+		$result = $this->_client->createProject($writerId, 'Test ' . uniqid());
 		$this->assertArrayHasKey('pid', $result, "Result of createProject request should return pid of created project");
 		$pid = $result['pid'];
 
-		$result = $this->_client->addUserToProject(FUNCTIONAL_WRITER_ID, $pid, $email);
+		$result = $this->_client->addUserToProject($writerId, $pid, $email);
 		$this->assertArrayHasKey('status', $result, "Result of addUserToProject request should return status");
 		$this->assertEquals('ok', $result['status'], "Result of addUserToProject request should contain 'status' key with value 'success'");
+
+		$result = $this->_client->getSsoLink($writerId, $pid, $email);
+		$this->assertArrayHasKey('status', $result, "Result of getSsoLink request should return status");
+		$this->assertEquals('ok', $result['status'], "Result of getSsoLink request should contain 'status' key with value 'success'");
+		$this->assertArrayHasKey('ssoLink', $result, "Result of getSsoLink request should return key 'ssoLink'");
 	}
 
 }

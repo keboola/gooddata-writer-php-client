@@ -175,7 +175,7 @@
 				}
 			}
 		},
-		"GetSSO": {
+		"GetSSOLink": {
 			"httpMethod": "GET",
 			"uri": "sso?writerId={writerId}&pid={pid}&email={email}",
 			"summary": "Generate SSO link to GD project for specified user",
