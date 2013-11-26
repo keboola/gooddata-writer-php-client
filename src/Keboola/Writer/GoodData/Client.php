@@ -37,7 +37,7 @@ class Client extends GuzzleClient
 	public static function factory($config = array())
 	{
 		$default = array(
-			'url' => 'https://gooddata-writer.keboola.com/'
+			'url' => 'https://syrup.keboola.com/gooddata-writer'
 		);
 		$required = array('token');
 		$config = Collection::fromConfig($config, $default, $required);
