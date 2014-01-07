@@ -1,3 +1,9 @@
+## 1.4.2
+ * [Bugfix] Removed needless dependency on SAPI PHP client
+
+## 1.4.1
+ * [Bugfix] Fixed default url to API endpoint
+
 ## 1.4.0
  * Added license and changelog
 

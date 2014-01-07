@@ -9,7 +9,6 @@
 		"phpunit/phpunit": "3.7.*"
 	},
 	"require": {
-        "guzzle/guzzle": "3.7.*",
-        "keboola/storage-api-client": "2.8.*"
+        "guzzle/guzzle": "3.7.*"
 	}
 }
