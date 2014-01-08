@@ -93,8 +93,9 @@ class Client extends GuzzleClient
 	/**
 	 * Create writer and wait for finish
 	 * @param $writerId
-	 * @return mixed
+	 * @param array $users
 	 * @throws ServerException
+	 * @return mixed
 	 */
 	public function createWriter($writerId, $users = array())
 	{

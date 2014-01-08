@@ -1,3 +1,6 @@
+## 1.5.1
+ * [Bugfix] Parameter users in createWriter call added to service.json
+
 ## 1.5.0
  * [Feature] Added parameter users in createWriter call
 

@@ -19,6 +19,11 @@
 					"type": "string",
 					"required": true
 				},
+				"users": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
 				"wait": {
 					"location": "json",
 					"type": "integer",
