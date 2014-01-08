@@ -98,7 +98,7 @@ class Client extends GuzzleClient
 	 */
 	public function createWriter($writerId, $users = array())
 	{
-		$job = $this->createWriterAsync($writerId);
+		$job = $this->createWriterAsync($writerId, $users);
 		if (!isset($job['job'])) {
 			throw new ServerException('Create writer job returned unexpected result');
 		}
