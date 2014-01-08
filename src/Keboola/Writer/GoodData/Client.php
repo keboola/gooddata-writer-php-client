@@ -75,13 +75,19 @@ class Client extends GuzzleClient
 	/**
 	 * Create writer
 	 * @param $writerId
+	 * @param array $users
 	 * @return mixed
 	 */
-	public function createWriterAsync($writerId)
+	public function createWriterAsync($writerId, $users = array())
 	{
-		return $this->getCommand('CreateWriter', array(
-			'writerId' => $writerId
-		))->execute();
+		$params = array(
+			'writerId' => $writerId,
+		);
+
+		if (!empty($users)) {
+			$params['users'] = implode(',', $users);
+		}
+		return $this->getCommand('CreateWriter', $params)->execute();
 	}
 
 	/**
@@ -90,9 +96,9 @@ class Client extends GuzzleClient
 	 * @return mixed
 	 * @throws ServerException
 	 */
-	public function createWriter($writerId)
+	public function createWriter($writerId, $users = array())
 	{
-		$job = $this->createWriterAsync($writerId);
+		$job = $this->createWriterAsync($writerId, $users);
 		if (!isset($job['job'])) {
 			throw new ServerException('Create writer job returned unexpected result');
 		}
