@@ -1,3 +1,6 @@
+## 1.5.0
+ * [Feature] Added parameter users in createWriter call
+
 ## 1.4.2
  * [Bugfix] Removed needless dependency on SAPI PHP client
 
