@@ -74,9 +74,6 @@ class Client extends GuzzleClient
 
 	/**
 	 * Create writer
-	 * @param $writerId
-	 * @param array $users
-	 * @return mixed
 	 */
 	public function createWriterAsync($writerId, $users = array())
 	{
@@ -92,19 +89,21 @@ class Client extends GuzzleClient
 
 	/**
 	 * Create writer and wait for finish
-	 * @param $writerId
-	 * @param array $users
-	 * @throws ServerException
-	 * @return mixed
 	 */
 	public function createWriter($writerId, $users = array())
 	{
+		$isBatch = (bool) count($users);
+		$key = $isBatch ? 'batch' : 'job';
+
+		if ($users && !is_array($users)) {
+			throw new ClientException("Parameter 'users' must be array");
+		}
 		$job = $this->createWriterAsync($writerId, $users);
-		if (!isset($job['job'])) {
+		if (!isset($job[$key])) {
 			throw new ServerException('Create writer job returned unexpected result');
 		}
 
-		return $this->_waitForJob($writerId, $job['job']);
+		return $this->_waitForJob($writerId, $job[$key], $isBatch);
 	}
 
 	/**
