@@ -15,8 +15,8 @@
 	</php>
 
 	<testsuites>
-		<testsuite name="KeboolaGoodDataWriterTests">
-			<file>tests/Keboola/Writer/GoodData/FunctionalTest.php</file>
+		<testsuite name="KeboolaGoodDataWriterWaitTest">
+			<file>tests/Keboola/Writer/GoodData/WaitTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
