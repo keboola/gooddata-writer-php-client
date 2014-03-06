@@ -24,6 +24,11 @@
 					"type": "string",
 					"required": false
 				},
+                "accessToken": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
 				"wait": {
 					"location": "json",
 					"type": "integer",
