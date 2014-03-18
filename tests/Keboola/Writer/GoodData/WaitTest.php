@@ -52,4 +52,17 @@ class WaitTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertLessThan(300, time() - $start, 'Waiting for upload-project request has been too long.');
 	}
+
+	public function testExecuteReports()
+	{
+		$start = time();
+		$request = $this->client->post('/gooddata-writer/execute-reports', array(), json_encode(array(
+			'writerId' => WAIT_WRITER_ID,
+			'pid' => WAIT_PROJECT_ID,
+			'wait' => 1
+		)));
+		$request->send();
+
+		$this->assertLessThan(300, time() - $start, 'Waiting for execute-reports request has been too long.');
+	}
 } 
