@@ -19,10 +19,10 @@ class WaitTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->client = new \Guzzle\Http\Client(FUNCTIONAL_GOODDATA_WRITER_API_URL, array(
+		$this->client = new \Guzzle\Http\Client(WAIT_GOODDATA_WRITER_API_URL, array(
 			'request.options' => array(
 				'headers' => array(
-					'X-StorageApi-Token' => FUNCTIONAL_STORAGE_API_TOKEN
+					'X-StorageApi-Token' => WAIT_STORAGE_API_TOKEN
 				)
 			)
 		));
@@ -36,9 +36,14 @@ class WaitTest extends \PHPUnit_Framework_TestCase
 			'tableId' => WAIT_TABLE_ID,
 			'wait' => 1
 		)));
-		$request->send();
+		try {
+			$request->send();
+		} catch (\Exception $e) {
+			$this->assertTrue(false, sprintf('Request execution failed with error: %s. Response was: %s', $e->getMessage(), $request->getResponse()->getBody(true)));
 
-		$this->assertLessThan(120, time() - $start, 'Waiting for upload-table request has been too long.');
+		}
+
+		$this->assertLessThan(WAIT_UPLOAD_TABLE_MAX_LENGTH, time() - $start, 'Waiting for upload-table request has been too long.');
 	}
 
 	public function testUploadProject()
@@ -48,9 +53,14 @@ class WaitTest extends \PHPUnit_Framework_TestCase
 			'writerId' => WAIT_WRITER_ID,
 			'wait' => 1
 		)));
-		$request->send();
+		try {
+			$request->send();
+		} catch (\Exception $e) {
+			$this->assertTrue(false, sprintf('Request execution failed with error: %s. Response was: %s', $e->getMessage(), $request->getResponse()->getBody(true)));
 
-		$this->assertLessThan(300, time() - $start, 'Waiting for upload-project request has been too long.');
+		}
+
+		$this->assertLessThan(WAIT_UPLOAD_PROJECT_MAX_LENGTH, time() - $start, 'Waiting for upload-project request has been too long.');
 	}
 
 	public function testExecuteReports()
@@ -61,8 +71,13 @@ class WaitTest extends \PHPUnit_Framework_TestCase
 			'pid' => WAIT_PROJECT_ID,
 			'wait' => 1
 		)));
-		$request->send();
+		try {
+			$request->send();
+		} catch (\Exception $e) {
+			$this->assertTrue(false, sprintf('Request execution failed with error: %s. Response was: %s', $e->getMessage(), $request->getResponse()->getBody(true)));
 
-		$this->assertLessThan(300, time() - $start, 'Waiting for execute-reports request has been too long.');
+		}
+
+		$this->assertLessThan(WAIT_EXECUTE_REPORTS_MAX_LENGTH, time() - $start, 'Waiting for execute-reports request has been too long.');
 	}
 } 
