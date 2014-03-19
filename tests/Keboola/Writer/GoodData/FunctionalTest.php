@@ -48,7 +48,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 		$result = $this->_client->createUser($writerId, $email, uniqid(), 'functional', 'test user');
 		$this->assertArrayHasKey('uid', $result, "Result of createUser request should return uid of created user");
 
-		$result = $this->_client->createProject($writerId, 'Test ' . uniqid());
+		$result = $this->_client->createProject($writerId, '[Test] functional ' . uniqid());
 		$this->assertArrayHasKey('pid', $result, "Result of createProject request should return pid of created project");
 		$pid = $result['pid'];
 
