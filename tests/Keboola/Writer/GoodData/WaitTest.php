@@ -80,4 +80,35 @@ class WaitTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertLessThan(WAIT_EXECUTE_REPORTS_MAX_LENGTH, time() - $start, 'Waiting for execute-reports request has been too long.');
 	}
+
+	public function testProxy()
+	{
+		$start = time();
+		$request = $this->client->post('/gooddata-writer/proxy', array(), json_encode(array(
+			'writerId' => WAIT_WRITER_ID,
+			'query' => '/gdc/md/' . WAIT_PROJECT_ID . '/ldm/manage2',
+			'payload' => array(
+				'manage' => array(
+					'maql' => 'SYNCHRONIZE {dataset.' . self::getId(WAIT_TABLE_ID) . '} PRESERVE DATA;'
+				)
+			),
+			'wait' => 1
+		)));
+		try {
+			$request->send();
+		} catch (\Exception $e) {
+			$this->assertTrue(false, sprintf('Request execution failed with error: %s. Response was: %s', $e->getMessage(), $request->getResponse()->getBody(true)));
+
+		}
+
+		$this->assertLessThan(WAIT_EXECUTE_REPORTS_MAX_LENGTH, time() - $start, 'Waiting for execute-reports request has been too long.');
+	}
+
+	private static function getId($name)
+	{
+		$string = iconv('utf-8', 'ascii//ignore//translit', $name);
+		$string = preg_replace('/[^\w\d_]/', '', $string);
+		$string = preg_replace('/^[\d_]*/', '', $string);
+		return strtolower($string);
+	}
 } 
