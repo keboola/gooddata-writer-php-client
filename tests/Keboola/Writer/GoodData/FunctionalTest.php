@@ -54,7 +54,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
 		$result = $this->_client->addUserToProject($writerId, $pid, $email);
 		$this->assertArrayHasKey('status', $result, "Result of addUserToProject request should return status");
-		$this->assertEquals('ok', $result['status'], "Result of addUserToProject request should contain 'status' key with value 'success'");
+		$this->assertEquals('success', $result['status'], "Result of addUserToProject request should contain 'status' key with value 'success'");
 
 		$result = $this->_client->getSsoLink($writerId, $pid, $email);
 		$this->assertNotEmpty($result, "Result of getSsoLink request should contain link");
