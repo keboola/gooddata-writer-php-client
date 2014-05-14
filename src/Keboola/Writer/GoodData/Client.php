@@ -44,6 +44,13 @@ class Client extends GuzzleClient
 		$config['request.options'] = array(
 			'headers' => array(
 				'X-StorageApi-Token' => $config->get('token')
+			),
+			'config' => array(
+				'curl' => array(
+					CURLOPT_SSLVERSION => 3,
+					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0
+				)
+
 			)
 		);
 
