@@ -24,14 +24,41 @@
 					"type": "string",
 					"required": false
 				},
-                "accessToken": {
-                    "location": "json",
-                    "type": "string",
-                    "required": false
-                },
-				"wait": {
+				"accessToken": {
 					"location": "json",
-					"type": "integer",
+					"type": "string",
+					"required": false
+				}
+			}
+		},
+		"CreateWriterWithProject": {
+			"httpMethod": "POST",
+			"uri": "writers",
+			"summary": "Create writer with existing GoodData project",
+			"parameters": {
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"pid": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"username": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"password": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"users": {
+					"location": "json",
+					"type": "string",
 					"required": false
 				}
 			}

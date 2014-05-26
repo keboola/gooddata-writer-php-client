@@ -117,6 +117,44 @@ class Client extends GuzzleClient
 	}
 
 	/**
+	 * Create writer with existing GoodData project
+	 */
+	public function createWriterWithProjectAsync($writerId, $pid, $username, $password, $users = array())
+	{
+		$params = array(
+			'writerId' => $writerId,
+			'pid' => $pid,
+			'username' => $username,
+			'password' => $password
+		);
+
+		if (!empty($users)) {
+			$params['users'] = implode(',', $users);
+		}
+		return $this->getCommand('CreateWriterWithProject', $params)->execute();
+	}
+
+	/**
+	 * Create writer with existing GoodData project and wait for finish
+	 */
+	public function createWriterWithProject($writerId, $pid, $username, $password, $users = array())
+	{
+		$isBatch = (bool) count($users);
+		$key = $isBatch ? 'batch' : 'job';
+
+		if ($users && !is_array($users)) {
+			throw new ClientException("Parameter 'users' must be array");
+		}
+		$job = $this->createWriterWithProjectAsync($writerId, $pid, $username, $password, $users);
+		if (!isset($job[$key])) {
+			throw new ServerException('Create writer job returned unexpected result');
+		}
+
+		return $this->_waitForJob($writerId, $job[$key], $isBatch);
+	}
+
+
+	/**
 	 * Delete writer
 	 * @param $writerId
 	 * @return mixed
