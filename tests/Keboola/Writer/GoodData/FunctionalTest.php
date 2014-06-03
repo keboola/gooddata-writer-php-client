@@ -15,48 +15,59 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @var \Keboola\Writer\GoodData\Client
 	 */
-	protected $_client;
+	protected $client;
 
 	public function setUp()
 	{
-		$this->_client = \Keboola\Writer\GoodData\Client::factory(array(
+		$this->client = \Keboola\Writer\GoodData\Client::factory(array(
 			'url' => FUNCTIONAL_GOODDATA_WRITER_API_URL,
 			'token' => FUNCTIONAL_STORAGE_API_TOKEN
 		));
 
-		foreach ($this->_client->getWriters() as $writer) {
+		foreach ($this->client->getWriters() as $writer) {
 			if ($writer['id'] != FUNCTIONAL_WRITER_ID) {
-				$this->_client->deleteWriter($writer['id']);
+				$this->client->deleteWriter($writer['id']);
 			}
 		}
 	}
 
 	public function testUploadProject()
 	{
-		$result = $this->_client->uploadProject(FUNCTIONAL_WRITER_ID);
-		$this->assertArrayHasKey('batch', $result, "Result of API call 'upload-project' should contain 'batch' key");
-		$this->assertArrayHasKey('status', $result['batch'], "Result of API call 'upload-project' should contain 'batch.status' key");
-		$this->assertEquals('success', $result['batch']['status'], "Result of API call 'upload-project' should contain 'batch.status' key with value 'success'");
+		$result = $this->client->uploadProject(FUNCTIONAL_WRITER_ID);
+		$this->assertArrayHasKey('status', $result, "Result of API call 'upload-project' should contain 'status' key");
+		$this->assertEquals('success', $result['status'], "Result of API call 'upload-project' should contain 'status' key with value 'success'");
+
+		$result = $this->client->uploadTable(FUNCTIONAL_WRITER_ID, 'out.c-main.categories');
+		$this->assertArrayHasKey('status', $result, "Result of API call 'upload-table' should contain 'status' key");
+		$this->assertEquals('success', $result['status'], "Result of API call 'upload-table' should contain 'status' key with value 'success'");
+
+		$result = $this->client->updateModel(FUNCTIONAL_WRITER_ID, 'out.c-main.categories');
+		$this->assertArrayHasKey('status', $result, "Result of API call 'update-model' should contain 'status' key");
+		$this->assertEquals('success', $result['status'], "Result of API call 'update-model' should contain 'status' key with value 'success'");
+
+		$result = $this->client->loadData(FUNCTIONAL_WRITER_ID, 'out.c-main.categories');
+		$this->assertArrayHasKey('status', $result, "Result of API call 'load-data' should contain 'status' key");
+		$this->assertEquals('success', $result['status'], "Result of API call 'load-data' should contain 'status' key with value 'success'");
 	}
 
 	public function testCreateUserAndProject()
 	{
 		$writerId = 'test' . uniqid();
-		$this->_client->createWriter($writerId);
+		$this->client->createWriter($writerId);
 
 		$email = uniqid() . '@' . uniqid() . '.com';
-		$result = $this->_client->createUser($writerId, $email, uniqid(), 'functional', 'test user');
+		$result = $this->client->createUser($writerId, $email, uniqid(), 'functional', 'test user');
 		$this->assertArrayHasKey('uid', $result, "Result of createUser request should return uid of created user");
 
-		$result = $this->_client->createProject($writerId, '[Test] functional ' . uniqid());
+		$result = $this->client->createProject($writerId, '[Test] functional ' . uniqid());
 		$this->assertArrayHasKey('pid', $result, "Result of createProject request should return pid of created project");
 		$pid = $result['pid'];
 
-		$result = $this->_client->addUserToProject($writerId, $pid, $email);
+		$result = $this->client->addUserToProject($writerId, $pid, $email);
 		$this->assertArrayHasKey('status', $result, "Result of addUserToProject request should return status");
 		$this->assertEquals('success', $result['status'], "Result of addUserToProject request should contain 'status' key with value 'success'");
 
-		$result = $this->_client->getSsoLink($writerId, $pid, $email);
+		$result = $this->client->getSsoLink($writerId, $pid, $email);
 		$this->assertNotEmpty($result, "Result of getSsoLink request should contain link");
 	}
 

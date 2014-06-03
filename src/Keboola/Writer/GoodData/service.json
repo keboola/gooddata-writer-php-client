@@ -248,6 +248,11 @@
 					"location": "json",
 					"type": "integer",
 					"required": false
+				},
+				"queue": {
+					"location": "json",
+					"type": "string",
+					"required": false
 				}
             }
         },
@@ -256,7 +261,7 @@
             "uri": "upload-table",
             "summary": "Upload table to GoodData",
             "parameters": {
-                "table": {
+                "tableId": {
                     "location": "json",
                     "type": "string",
                     "required": true
@@ -270,26 +275,63 @@
                     "location": "json",
                     "type": "integer",
                     "required": false
-                }
-            }
-        },
-        "Xml": {
-            "httpMethod": "GET",
-            "uri": "xml",
-            "summary": "Get configuration xml of selected table",
-            "parameters": {
-                "table": {
-                    "location": "query",
-                    "type": "string",
-                    "required": true
                 },
-                "writerId": {
-                    "location": "query",
-                    "type": "string",
-                    "required": true
-                }
+				"queue": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				}
             }
         },
+		"UpdateModel": {
+			"httpMethod": "POST",
+			"uri": "update-model",
+			"summary": "Update model of table in GoodData",
+			"parameters": {
+				"tableId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"queue": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				}
+			}
+		},
+		"LoadData": {
+			"httpMethod": "POST",
+			"uri": "load-data",
+			"summary": "Load data to table in GoodData",
+			"parameters": {
+				"tableId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"incrementalLoad": {
+					"location": "json",
+					"type": "integer",
+					"required": false
+				},
+				"queue": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				}
+			}
+		},
         "JobsList": {
             "httpMethod": "GET",
             "uri": "jobs",
