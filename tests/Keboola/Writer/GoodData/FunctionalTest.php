@@ -31,7 +31,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 		}
 	}
 
-	public function testUploadProject()
+	public function testUpload()
 	{
 		$result = $this->client->uploadProject(FUNCTIONAL_WRITER_ID);
 		$this->assertArrayHasKey('status', $result, "Result of API call 'upload-project' should contain 'status' key");
@@ -45,7 +45,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey('status', $result, "Result of API call 'update-model' should contain 'status' key");
 		$this->assertEquals('success', $result['status'], "Result of API call 'update-model' should contain 'status' key with value 'success'");
 
-		$result = $this->client->loadData(FUNCTIONAL_WRITER_ID, 'out.c-main.categories');
+		$result = $this->client->loadData(FUNCTIONAL_WRITER_ID, array('out.c-main.categories', 'out.c-main.products'));
 		$this->assertArrayHasKey('status', $result, "Result of API call 'load-data' should contain 'status' key");
 		$this->assertEquals('success', $result['status'], "Result of API call 'load-data' should contain 'status' key with value 'success'");
 	}

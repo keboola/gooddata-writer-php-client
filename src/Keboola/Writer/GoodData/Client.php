@@ -473,16 +473,16 @@ class Client extends GuzzleClient
 	/**
 	 * Load data to table in GoodData
 	 * @param $writerId
-	 * @param $tableId
+	 * @param array $tables
 	 * @param null $incrementalLoad
 	 * @param string $queue
 	 * @return mixed
 	 */
-	public function loadDataAsync($writerId, $tableId, $incrementalLoad = null, $queue = 'primary')
+	public function loadDataAsync($writerId, array $tables, $incrementalLoad = null, $queue = 'primary')
 	{
 		return $this->getCommand('LoadData', array(
 			'writerId' => $writerId,
-			'tableId' => $tableId,
+			'tables' => $tables,
 			'incrementalLoad' => $incrementalLoad,
 			'queue' => $queue
 		))->execute();
@@ -491,15 +491,15 @@ class Client extends GuzzleClient
 	/**
 	 * Load data to table in GoodData and wait for result
 	 * @param $writerId
-	 * @param $tableId
+	 * @param array $tables
 	 * @param null $incrementalLoad
 	 * @param string $queue
 	 * @throws ServerException
 	 * @return mixed
 	 */
-	public function loadData($writerId, $tableId, $incrementalLoad = null, $queue = 'primary')
+	public function loadData($writerId, array $tables, $incrementalLoad = null, $queue = 'primary')
 	{
-		$job = $this->loadDataAsync($writerId, $tableId, $incrementalLoad, $queue);
+		$job = $this->loadDataAsync($writerId, $tables, $incrementalLoad, $queue);
 		if (!isset($job['job'])) {
 			throw new ServerException('Load data job returned unexpected result');
 		}

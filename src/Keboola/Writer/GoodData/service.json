@@ -310,9 +310,9 @@
 			"uri": "load-data",
 			"summary": "Load data to table in GoodData",
 			"parameters": {
-				"tableId": {
+				"tables": {
 					"location": "json",
-					"type": "string",
+					"type": "array",
 					"required": true
 				},
 				"writerId": {
