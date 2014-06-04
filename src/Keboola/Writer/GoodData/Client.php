@@ -463,11 +463,11 @@ class Client extends GuzzleClient
 	public function updateModel($writerId, $tableId, $queue = 'primary')
 	{
 		$job = $this->updateModelAsync($writerId, $tableId, $queue);
-		if (!isset($job['batch'])) {
+		if (!isset($job['job'])) {
 			throw new ServerException('Update model job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $job['batch'], true);
+		return $this->waitForJob($writerId, $job['job']);
 	}
 
 	/**
