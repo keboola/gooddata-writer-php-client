@@ -463,11 +463,11 @@ class Client extends GuzzleClient
 	public function updateModel($writerId, $tableId, $queue = 'primary')
 	{
 		$job = $this->updateModelAsync($writerId, $tableId, $queue);
-		if (!isset($job['job'])) {
+		if (!isset($job['batch'])) {
 			throw new ServerException('Update model job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $job['job']);
+		return $this->waitForJob($writerId, $job['batch'], true);
 	}
 
 	/**
@@ -500,11 +500,11 @@ class Client extends GuzzleClient
 	public function loadData($writerId, array $tables, $incrementalLoad = null, $queue = 'primary')
 	{
 		$job = $this->loadDataAsync($writerId, $tables, $incrementalLoad, $queue);
-		if (!isset($job['job'])) {
+		if (!isset($job['batch'])) {
 			throw new ServerException('Load data job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $job['job']);
+		return $this->waitForJob($writerId, $job['batch'], true);
 	}
 	
 
