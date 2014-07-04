@@ -234,7 +234,147 @@
 				}
 			}
 		},
-        "UploadProject": {
+		"GetTables": {
+			"httpMethod": "GET",
+			"uri": "tables?writerId={writerId}",
+			"summary": "Get tables list",
+			"parameters": {
+				"writerId": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				}
+			}
+		},
+		"GetTable": {
+			"httpMethod": "GET",
+			"uri": "tables?writerId={writerId}&tableId={tableId}",
+			"summary": "Get table configuration",
+			"parameters": {
+				"writerId": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				},
+				"tableId": {
+					"location": "uri",
+					"type": "string",
+					"required": true
+				}
+			}
+		},
+		"UpdateTable": {
+			"httpMethod": "POST",
+			"uri": "tables",
+			"summary": "Update table configuration",
+			"parameters": {
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"tableId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"name": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"export": {
+					"location": "json",
+					"type": "integer",
+					"required": false
+				},
+				"incrementalLoad": {
+					"location": "json",
+					"type": "integer",
+					"required": false
+				},
+				"ignoreFilter": {
+					"location": "json",
+					"type": "integer",
+					"required": false
+				}
+			}
+		},
+		"UpdateTableColumn": {
+			"httpMethod": "POST",
+			"uri": "tables",
+			"summary": "Update table column configuration",
+			"parameters": {
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"tableId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"column": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"gdName": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"type": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"reference": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"schemaReference": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"format": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				},
+				"dateDimension": {
+					"location": "json",
+					"type": "string",
+					"required": false
+				}
+			}
+		},
+		"UpdateTableColumns": {
+			"httpMethod": "POST",
+			"uri": "tables",
+			"summary": "Update table columns configuration",
+			"parameters": {
+				"writerId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"tableId": {
+					"location": "json",
+					"type": "string",
+					"required": true
+				},
+				"columns": {
+					"location": "json",
+					"type": "array",
+					"required": true
+				}
+			}
+		},
+		"UploadProject": {
             "httpMethod": "POST",
             "uri": "upload-project",
             "summary": "Upload whole project to GoodData",

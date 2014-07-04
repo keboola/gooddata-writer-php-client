@@ -364,6 +364,120 @@ class Client extends GuzzleClient
 		return $result['ssoLink'];
 	}
 
+	/**
+	 * Get list of tables
+	 * @param $writerId
+	 * @return mixed
+	 */
+	public function getTables($writerId)
+	{
+		return $this->getCommand('GetTables', array(
+			'writerId' => $writerId
+		))->execute();
+	}
+
+	/**
+	 * Get table configuration
+	 * @param $writerId
+	 * @param $tableId
+	 * @return mixed
+	 */
+	public function getTable($writerId, $tableId)
+	{
+		return $this->getCommand('GetTable', array(
+			'writerId' => $writerId,
+			'tableId' => $tableId
+		))->execute();
+	}
+
+	/**
+	 * Update table configuration
+	 * @param $writerId
+	 * @param $tableId
+	 * @param null $name
+	 * @param null $export
+	 * @param null $incrementalLoad
+	 * @param null $ignoreFilter
+	 * @return mixed
+	 */
+	public function updateTable($writerId, $tableId, $name=null, $export=null, $incrementalLoad=null, $ignoreFilter=null)
+	{
+		$params = array(
+			'writerId' => $writerId,
+			'tableId' => $tableId
+		);
+		if ($name !== null) {
+			$params['name'] = $name;
+		}
+		if ($export !== null) {
+			$params['export'] = (bool)$export;
+		}
+		if ($incrementalLoad !== null) {
+			$params['incrementalLoad'] = (bool)$incrementalLoad;
+		}
+		if ($ignoreFilter !== null) {
+			$params['ignoreFilter'] = (bool)$ignoreFilter;
+		}
+		return $this->getCommand('UpdateTable', $params)->execute();
+	}
+
+	/**
+	 * Update table column configuration
+	 * @param $writerId
+	 * @param $tableId
+	 * @param $column
+	 * @param array $configuration Array with keys: [gdName, type, reference, schemaReference, format, dateDimension]
+	 * @throws ClientException
+	 * @return mixed
+	 */
+	public function updateTableColumn($writerId, $tableId, $column, array $configuration)
+	{
+		$allowedConfigurationOptions = array('gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension');
+		foreach ($configuration as $k => $v) {
+			if (!in_array($k, $allowedConfigurationOptions)) {
+				throw new ClientException("Option '" . $k . "' is not allowed, choose from: " . implode(', ', $allowedConfigurationOptions));
+			}
+		}
+
+		$params = array(
+			'writerId' => $writerId,
+			'tableId' => $tableId,
+			'column' => $column
+		);
+		$params = array_merge($params, $configuration);
+		return $this->getCommand('UpdateTableColumn', $params)->execute();
+	}
+
+	/**
+	 * Update table columns configuration
+	 * @param $writerId
+	 * @param $tableId
+	 * @param array $columns Array of arrays with keys: [name, gdName, type, reference, schemaReference, format, dateDimension]
+	 * @throws ClientException
+	 * @return mixed
+	 */
+	public function updateTableColumns($writerId, $tableId, array $columns)
+	{
+		$allowedConfigurationOptions = array('name', 'gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension');
+		foreach ($columns as $column) {
+			if (!isset($column['name'])) {
+				throw new ClientException("One of the columns is missing 'name' parameter");
+			}
+			foreach ($column as $k => $v) {
+				if (!in_array($k, $allowedConfigurationOptions)) {
+					throw new ClientException("Option '" . $k . "' for column '" . $column . "' is not allowed, choose from: " . implode(', ', $allowedConfigurationOptions));
+				}
+			}
+		}
+
+		$params = array(
+			'writerId' => $writerId,
+			'tableId' => $tableId,
+			'columns' => $columns
+		);
+		return $this->getCommand('UpdateTableColumns', $params)->execute();
+	}
+
 
 	/**
 	 * Upload project to GoodData
