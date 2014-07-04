@@ -18,7 +18,7 @@ To start using composer in your project follow these steps:
     {
         "require": {
             "php" : ">=5.3.2",
-            "keboola/gooddata-writer-api-client": "1.0.*"
+            "keboola/gooddata-writer-php-client": "1.0.*"
         }
     }
 
