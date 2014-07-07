@@ -20,8 +20,8 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		$this->client = \Keboola\Writer\GoodData\Client::factory(array(
-			'url' => FUNCTIONAL_GOODDATA_WRITER_API_URL,
-			'token' => FUNCTIONAL_STORAGE_API_TOKEN
+			'url' => GOODDATA_WRITER_API_URL,
+			'token' => STORAGE_API_TOKEN
 		));
 
 		foreach ($this->client->getWriters() as $writer) {

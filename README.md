@@ -18,7 +18,7 @@ To start using composer in your project follow these steps:
     {
         "require": {
             "php" : ">=5.3.2",
-            "keboola/gooddata-writer-php-client": "1.0.*"
+            "keboola/gooddata-writer-php-client": "~1.9"
         }
     }
 
@@ -40,7 +40,7 @@ Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.
 Tests requires valid Storage API token and URL of API.
 You can set these by copying file config.template.php into config.php and filling required constants int config.php file. Other way to provide parameters is to set environment variables:
 
-    export=STORAGE_API_URL=https://gooddata-writer.keboola.com
+	export=GOODDATA_WRITER_API_URL=https://syrup.keboola.com/gooddata-writer
     export=STORAGE_API_TOKEN=YOUR_TOKEN
 
 Tests expects master token and performs all operations.
