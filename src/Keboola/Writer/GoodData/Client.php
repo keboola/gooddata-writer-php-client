@@ -102,18 +102,15 @@ class Client extends GuzzleClient
 	 */
 	public function createWriter($writerId, $users = array(), $accessToken = null)
 	{
-		$isBatch = (bool) count($users);
-		$key = $isBatch ? 'batch' : 'job';
-
 		if ($users && !is_array($users)) {
 			throw new ClientException("Parameter 'users' must be array");
 		}
 		$job = $this->createWriterAsync($writerId, $users, $accessToken);
-		if (!isset($job[$key])) {
+		if (!isset($job['url'])) {
 			throw new ServerException('Create writer job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $job[$key], $isBatch);
+		return $this->waitForJob($job['url']);
 	}
 
 	/**
@@ -139,18 +136,15 @@ class Client extends GuzzleClient
 	 */
 	public function createWriterWithProject($writerId, $pid, $username, $password, $users = array())
 	{
-		$isBatch = (bool) count($users);
-		$key = $isBatch ? 'batch' : 'job';
-
 		if ($users && !is_array($users)) {
 			throw new ClientException("Parameter 'users' must be array");
 		}
 		$job = $this->createWriterWithProjectAsync($writerId, $pid, $username, $password, $users);
-		if (!isset($job[$key])) {
+		if (!isset($job['url'])) {
 			throw new ServerException('Create writer job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $job[$key], $isBatch);
+		return $this->waitForJob($job['url']);
 	}
 
 
@@ -216,11 +210,11 @@ class Client extends GuzzleClient
 	public function createUser($writerId, $email, $password, $firstName, $lastName, $queue = 'primary')
 	{
 		$job = $this->createUserAsync($writerId, $email, $password, $firstName, $lastName, $queue);
-		if (!isset($job['job'])) {
+		if (!isset($job['url'])) {
 			throw new ServerException('Create user job returned unexpected result');
 		}
 
-		$result = $this->waitForJob($writerId, $job['job']);
+		$result = $this->waitForJob($job['url']);
 		if (!isset($result['result']['uid'])) {
 			throw new ServerException('Job info for create user returned unexpected result');
 		}
@@ -274,11 +268,11 @@ class Client extends GuzzleClient
 	public function createProject($writerId, $name = null, $accessToken = null, $queue = 'primary')
 	{
 		$job = $this->createProjectAsync($writerId, $name, $accessToken, $queue);
-		if (!isset($job['job'])) {
+		if (!isset($job['url'])) {
 			throw new ServerException('Create project job returned unexpected result');
 		}
 
-		$result = $this->waitForJob($writerId, $job['job']);
+		$result = $this->waitForJob($job['url']);
 		if (!isset($result['result']['pid'])) {
 			throw new ServerException('Job info for create project returned unexpected result');
 		}
@@ -336,11 +330,11 @@ class Client extends GuzzleClient
 	public function addUserToProject($writerId, $pid, $email, $role = 'editor', $queue = 'primary')
 	{
 		$job = $this->addUserToProjectAsync($writerId, $pid, $email, $role, $queue);
-		if (!isset($job['job'])) {
+		if (!isset($job['url'])) {
 			throw new ServerException('Create project job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $job['job']);
+		return $this->waitForJob($job['url']);
 	}
 
 	/**
@@ -506,11 +500,11 @@ class Client extends GuzzleClient
 	public function uploadProject($writerId, $incrementalLoad = null, $queue = 'primary')
 	{
 		$batch = $this->uploadProjectAsync($writerId, $incrementalLoad, $queue);
-		if (!isset($batch['batch'])) {
+		if (!isset($batch['url'])) {
 			throw new ServerException('Upload project batch returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $batch['batch'], true);
+		return $this->waitForJob($batch['url']);
 	}
 
 	/**
@@ -543,11 +537,11 @@ class Client extends GuzzleClient
 	public function uploadTable($writerId, $tableId, $incrementalLoad = null, $queue = 'primary')
 	{
 		$batch = $this->uploadTableAsync($writerId, $tableId, $incrementalLoad, $queue);
-		if (!isset($batch['batch'])) {
+		if (!isset($batch['url'])) {
 			throw new ServerException('Upload table job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $batch['batch'], true);
+		return $this->waitForJob($batch['url']);
 	}
 
 	/**
@@ -577,11 +571,11 @@ class Client extends GuzzleClient
 	public function updateModel($writerId, $tableId, $queue = 'primary')
 	{
 		$batch = $this->updateModelAsync($writerId, $tableId, $queue);
-		if (!isset($batch['batch'])) {
+		if (!isset($batch['url'])) {
 			throw new ServerException('Update model job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $batch['batch'], true);
+		return $this->waitForJob($batch['url']);
 	}
 
 	/**
@@ -614,11 +608,11 @@ class Client extends GuzzleClient
 	public function loadData($writerId, array $tables, $incrementalLoad = null, $queue = 'primary')
 	{
 		$batch = $this->loadDataAsync($writerId, $tables, $incrementalLoad, $queue);
-		if (!isset($batch['batch'])) {
+		if (!isset($batch['url'])) {
 			throw new ServerException('Load data job returned unexpected result');
 		}
 
-		return $this->waitForJob($writerId, $batch['batch'], true);
+		return $this->waitForJob($batch['url']);
 	}
 	
 
@@ -698,23 +692,17 @@ class Client extends GuzzleClient
 	}
 
 
-
-
 	/**
 	 * Ask repeatedly for job or batch status until it is finished
-	 * @param $writerId
-	 * @param $jobId
-	 * @param bool $isBatch
-	 * @return mixed
+	 * @param $url
+	 * @return \Guzzle\Http\Message\RequestInterface
 	 */
-	protected function waitForJob($writerId, $jobId, $isBatch = false)
+	protected function waitForJob($url)
 	{
 		$jobFinished = false;
 		$i = 1;
 		do {
-			$jobInfo = $isBatch
-				? $this->getBatch($writerId, $jobId)
-				: $this->getJob($writerId, $jobId);
+			$jobInfo = $jobInfo = $this->get($url)->send()->json();
 			if (isset($jobInfo['status']) && !in_array($jobInfo['status'], array('waiting', 'processing'))) {
 				$jobFinished = true;
 			}
