@@ -2,3 +2,4 @@
 cache.properties
 config.php
 composer.lock
+composer.phar

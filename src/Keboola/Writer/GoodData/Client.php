@@ -215,11 +215,11 @@ class Client extends GuzzleClient
 		}
 
 		$result = $this->waitForJob($job['url']);
-		if (!isset($result['result']['uid'])) {
+		if (!isset($result['jobs'][0]['result']['uid'])) {
 			throw new ServerException('Job info for create user returned unexpected result');
 		}
 
-		return array('uid' => $result['result']['uid']);
+		return array('uid' => $result['jobs'][0]['result']['uid']);
 	}
 
 
@@ -273,11 +273,11 @@ class Client extends GuzzleClient
 		}
 
 		$result = $this->waitForJob($job['url']);
-		if (!isset($result['result']['pid'])) {
+		if (!isset($result['jobs'][0]['result']['pid'])) {
 			throw new ServerException('Job info for create project returned unexpected result');
 		}
 
-		return array('pid' => $result['result']['pid']);
+		return array('pid' => $result['jobs'][0]['result']['pid']);
 	}
 
 
