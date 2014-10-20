@@ -47,7 +47,6 @@ class Client extends GuzzleClient
 			),
 			'config' => array(
 				'curl' => array(
-					CURLOPT_SSLVERSION => 3,
 					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0
 				)
 
