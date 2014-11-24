@@ -7,9 +7,13 @@
 namespace Keboola\Writer\GoodData;
 
 use Guzzle\Common\Collection;
+use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
+use Guzzle\Plugin\Backoff\ExponentialBackoffStrategy;
+use Guzzle\Plugin\Backoff\HttpBackoffStrategy;
 use Guzzle\Service\Client as GuzzleClient;
 use Guzzle\Service\Description\ServiceDescription;
 use Guzzle\Plugin\Backoff\BackoffPlugin;
+use Keboola\Backoff\TruncatedBackoffStrategy;
 
 class ServerException extends \Exception
 {
@@ -62,7 +66,14 @@ class Client extends GuzzleClient
 		$client->setBaseUrl($config->get('url'));
 
 		// Setup exponential backoff
-		$backoffPlugin = BackoffPlugin::getExponentialBackoff();
+		// 503 retry always, other errors five times
+		$backoffPlugin = new BackoffPlugin(new TruncatedBackoffStrategy(5,
+			new HttpBackoffStrategy(null,
+				new CurlBackoffStrategy(null,
+					new ExponentialBackoffStrategy()
+				)
+			)
+		));
 		$client->addSubscriber($backoffPlugin);
 
 		return $client;
