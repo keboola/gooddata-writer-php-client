@@ -33,6 +33,6 @@ class TruncatedBackoffStrategy extends AbstractBackoffStrategy
 
 	protected function getDelay($retries, RequestInterface $request, Response $response = null, HttpException $e = null)
 	{
-		return ($response->getStatusCode() == 503 || $retries < $this->max) ? null : false;
+		return (($response && $response->getStatusCode() == 503) || $retries < $this->max) ? null : false;
 	}
 }
