@@ -121,10 +121,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
 	public function testCreateUserAndProject()
 	{
+		$projectId = substr(STORAGE_API_TOKEN, 0, strpos(STORAGE_API_TOKEN, '-'));
 		$writerId = 'test' . uniqid();
 		$this->client->createWriter($writerId);
 
-		$email = uniqid() . '@' . uniqid() . '.com';
+		$email = $projectId. '-test-functional-' . uniqid() . '@test.com';
 		$result = $this->client->createUser($writerId, $email, uniqid(), 'functional', 'test user');
 		$this->assertArrayHasKey('uid', $result, "Result of createUser request should return uid of created user");
 

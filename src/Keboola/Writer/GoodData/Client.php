@@ -38,24 +38,24 @@ class Client extends GuzzleClient
 	 *
 	 * @return self
 	 */
-	public static function factory($config = array())
+	public static function factory($config = [])
 	{
-		$default = array(
+		$default = [
 			'url' => 'https://syrup.keboola.com/gooddata-writer'
-		);
-		$required = array('token');
+		];
+		$required = ['token'];
 		$config = Collection::fromConfig($config, $default, $required);
-		$config['request.options'] = array(
-			'headers' => array(
+		$config['request.options'] = [
+			'headers' => [
 				'X-StorageApi-Token' => $config->get('token')
-			),
-			'config' => array(
-				'curl' => array(
+			],
+			'config' => [
+				'curl' => [
 					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0
-				)
+				]
 
-			)
-		);
+			]
+		];
 
 		$client = new self($config->get('url'), $config);
 
@@ -91,8 +91,12 @@ class Client extends GuzzleClient
 
 	/**
 	 * Create writer
+	 * @param $writerId
+	 * @param array $users
+	 * @param null $accessToken
+	 * @return mixed
 	 */
-	public function createWriterAsync($writerId, $users = array(), $accessToken = null)
+	public function createWriterAsync($writerId, $users = [], $accessToken = null)
 	{
 		$params = array(
 			'writerId' => $writerId,
@@ -109,15 +113,21 @@ class Client extends GuzzleClient
 
 	/**
 	 * Create writer and wait for finish
+	 * @param $writerId
+	 * @param array $users
+	 * @param null $accessToken
+	 * @return \Guzzle\Http\Message\RequestInterface
+	 * @throws ClientException
+	 * @throws ServerException
 	 */
-	public function createWriter($writerId, $users = array(), $accessToken = null)
+	public function createWriter($writerId, $users = [], $accessToken = null)
 	{
 		if ($users && !is_array($users)) {
 			throw new ClientException("Parameter 'users' must be array");
 		}
 		$job = $this->createWriterAsync($writerId, $users, $accessToken);
 		if (!isset($job['url'])) {
-			throw new ServerException('Create writer job returned unexpected result');
+			throw new ServerException('Create writer job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
 		return $this->waitForJob($job['url']);
@@ -125,15 +135,21 @@ class Client extends GuzzleClient
 
 	/**
 	 * Create writer with existing GoodData project
+	 * @param $writerId
+	 * @param $pid
+	 * @param $username
+	 * @param $password
+	 * @param array $users
+	 * @return mixed
 	 */
-	public function createWriterWithProjectAsync($writerId, $pid, $username, $password, $users = array())
+	public function createWriterWithProjectAsync($writerId, $pid, $username, $password, $users = [])
 	{
-		$params = array(
+		$params = [
 			'writerId' => $writerId,
 			'pid' => $pid,
 			'username' => $username,
 			'password' => $password
-		);
+		];
 
 		if (!empty($users)) {
 			$params['users'] = implode(',', $users);
@@ -143,15 +159,23 @@ class Client extends GuzzleClient
 
 	/**
 	 * Create writer with existing GoodData project and wait for finish
+	 * @param $writerId
+	 * @param $pid
+	 * @param $username
+	 * @param $password
+	 * @param array $users
+	 * @return \Guzzle\Http\Message\RequestInterface
+	 * @throws ClientException
+	 * @throws ServerException
 	 */
-	public function createWriterWithProject($writerId, $pid, $username, $password, $users = array())
+	public function createWriterWithProject($writerId, $pid, $username, $password, $users = [])
 	{
 		if ($users && !is_array($users)) {
 			throw new ClientException("Parameter 'users' must be array");
 		}
 		$job = $this->createWriterWithProjectAsync($writerId, $pid, $username, $password, $users);
 		if (!isset($job['url'])) {
-			throw new ServerException('Create writer job returned unexpected result');
+			throw new ServerException('Create writer job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
 		return $this->waitForJob($job['url']);
@@ -165,9 +189,9 @@ class Client extends GuzzleClient
 	 */
 	public function deleteWriter($writerId)
 	{
-		return $this->getCommand('DeleteWriter', array(
+		return $this->getCommand('DeleteWriter', [
 			'writerId' => $writerId
-		))->execute();
+		])->execute();
 	}
 
 
@@ -178,9 +202,9 @@ class Client extends GuzzleClient
 	 */
 	public function getUsers($writerId)
 	{
-		$result = $this->getCommand('GetUsers', array(
+		$result = $this->getCommand('GetUsers', [
 			'writerId' => $writerId
-		))->execute();
+		])->execute();
 		return $result['users'];
 	}
 
@@ -196,14 +220,14 @@ class Client extends GuzzleClient
 	 */
 	public function createUserAsync($writerId, $email, $password, $firstName, $lastName, $queue = 'primary')
 	{
-		return $this->getCommand('CreateUser', array(
+		return $this->getCommand('CreateUser', [
 			'writerId' => $writerId,
 			'email' => $email,
 			'password' => $password,
 			'firstName' => $firstName,
 			'lastName' => $lastName,
 			'queue' => $queue
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -221,15 +245,15 @@ class Client extends GuzzleClient
 	{
 		$job = $this->createUserAsync($writerId, $email, $password, $firstName, $lastName, $queue);
 		if (!isset($job['url'])) {
-			throw new ServerException('Create user job returned unexpected result');
+			throw new ServerException('Create user job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
 		$result = $this->waitForJob($job['url']);
-		if (!isset($result['jobs'][0]['result']['uid'])) {
-			throw new ServerException('Job info for create user returned unexpected result');
+		if (!isset($result['result'][0]['uid'])) {
+			throw new ServerException('Job info for create user returned unexpected result: ' . json_encode($result, JSON_PRETTY_PRINT));
 		}
 
-		return array('uid' => $result['jobs'][0]['result']['uid']);
+		return ['uid' => $result['result'][0]['uid']];
 	}
 
 
@@ -241,9 +265,9 @@ class Client extends GuzzleClient
 	 */
 	public function getProjects($writerId)
 	{
-		$result = $this->getCommand('getProjects', array(
+		$result = $this->getCommand('getProjects', [
 			'writerId' => $writerId
-		))->execute();
+		])->execute();
 		return $result['projects'];
 	}
 
@@ -257,10 +281,10 @@ class Client extends GuzzleClient
 	 */
 	public function createProjectAsync($writerId, $name = null, $accessToken = null, $queue = 'primary')
 	{
-		$params = array(
+		$params = [
 			'writerId' => $writerId,
 			'queue' => $queue
-		);
+		];
 		if ($name) $params['name'] = $name;
 		if ($accessToken) $params['accessToken'] = $accessToken;
 		return $this->getCommand('CreateProject', $params)->execute();
@@ -279,15 +303,15 @@ class Client extends GuzzleClient
 	{
 		$job = $this->createProjectAsync($writerId, $name, $accessToken, $queue);
 		if (!isset($job['url'])) {
-			throw new ServerException('Create project job returned unexpected result');
+			throw new ServerException('Create project job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
 		$result = $this->waitForJob($job['url']);
-		if (!isset($result['jobs'][0]['result']['pid'])) {
-			throw new ServerException('Job info for create project returned unexpected result');
+		if (!isset($result['result'][0]['pid'])) {
+			throw new ServerException('Job info for create project returned unexpected result: ' . json_encode($result, JSON_PRETTY_PRINT));
 		}
 
-		return array('pid' => $result['jobs'][0]['result']['pid']);
+		return ['pid' => $result['result'][0]['pid']];
 	}
 
 
@@ -300,10 +324,10 @@ class Client extends GuzzleClient
 	 */
 	public function getProjectUsers($writerId, $pid)
 	{
-		$result = $this->getCommand('getProjectUsers', array(
+		$result = $this->getCommand('getProjectUsers', [
 			'writerId' => $writerId,
 			'pid' => $pid
-		))->execute();
+		])->execute();
 		return $result['users'];
 	}
 
@@ -318,13 +342,13 @@ class Client extends GuzzleClient
 	 */
 	public function addUserToProjectAsync($writerId, $pid, $email, $role = 'editor', $queue = 'primary')
 	{
-		return $this->getCommand('AddUserToProject', array(
+		return $this->getCommand('AddUserToProject', [
 			'writerId' => $writerId,
 			'pid' => $pid,
 			'email' => $email,
 			'role' => $role,
 			'queue' => $queue
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -341,7 +365,7 @@ class Client extends GuzzleClient
 	{
 		$job = $this->addUserToProjectAsync($writerId, $pid, $email, $role, $queue);
 		if (!isset($job['url'])) {
-			throw new ServerException('Create project job returned unexpected result');
+			throw new ServerException('Create project job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
 		return $this->waitForJob($job['url']);
@@ -357,11 +381,11 @@ class Client extends GuzzleClient
 	 */
 	public function getSsoLink($writerId, $pid, $email)
 	{
-		$result = $this->getCommand('GetSSOLink', array(
+		$result = $this->getCommand('GetSSOLink', [
 			'writerId' => $writerId,
 			'pid' => $pid,
 			'email' => $email
-		))->execute();
+		])->execute();
 		if (!isset($result['ssoLink'])) {
 			throw new ClientException('Getting SSO link failed. ' . (isset($result['error']) ? $result['error'] : ''));
 		}
@@ -375,9 +399,9 @@ class Client extends GuzzleClient
 	 */
 	public function getTables($writerId)
 	{
-		return $this->getCommand('GetTables', array(
+		return $this->getCommand('GetTables', [
 			'writerId' => $writerId
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -388,10 +412,10 @@ class Client extends GuzzleClient
 	 */
 	public function getTable($writerId, $tableId)
 	{
-		return $this->getCommand('GetTable', array(
+		return $this->getCommand('GetTable', [
 			'writerId' => $writerId,
 			'tableId' => $tableId
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -406,10 +430,10 @@ class Client extends GuzzleClient
 	 */
 	public function updateTable($writerId, $tableId, $name=null, $export=null, $incrementalLoad=null, $ignoreFilter=null)
 	{
-		$params = array(
+		$params = [
 			'writerId' => $writerId,
 			'tableId' => $tableId
-		);
+		];
 		if ($name !== null) {
 			$params['name'] = $name;
 		}
@@ -436,18 +460,18 @@ class Client extends GuzzleClient
 	 */
 	public function updateTableColumn($writerId, $tableId, $column, array $configuration)
 	{
-		$allowedConfigurationOptions = array('gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension');
+		$allowedConfigurationOptions = ['gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension'];
 		foreach ($configuration as $k => $v) {
 			if (!in_array($k, $allowedConfigurationOptions)) {
 				throw new ClientException("Option '" . $k . "' is not allowed, choose from: " . implode(', ', $allowedConfigurationOptions));
 			}
 		}
 
-		$params = array(
+		$params = [
 			'writerId' => $writerId,
 			'tableId' => $tableId,
 			'column' => $column
-		);
+		];
 		$params = array_merge($params, $configuration);
 		return $this->getCommand('UpdateTableColumn', $params)->execute();
 	}
@@ -462,7 +486,7 @@ class Client extends GuzzleClient
 	 */
 	public function updateTableColumns($writerId, $tableId, array $columns)
 	{
-		$allowedConfigurationOptions = array('name', 'gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension');
+		$allowedConfigurationOptions = ['name', 'gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension'];
 		foreach ($columns as $column) {
 			if (!isset($column['name'])) {
 				throw new ClientException("One of the columns is missing 'name' parameter");
@@ -474,11 +498,11 @@ class Client extends GuzzleClient
 			}
 		}
 
-		$params = array(
+		$params = [
 			'writerId' => $writerId,
 			'tableId' => $tableId,
 			'columns' => $columns
-		);
+		];
 		return $this->getCommand('UpdateTableColumns', $params)->execute();
 	}
 
@@ -492,11 +516,11 @@ class Client extends GuzzleClient
 	 */
 	public function uploadProjectAsync($writerId, $incrementalLoad = null, $queue = 'primary')
 	{
-		return $this->getCommand('UploadProject', array(
+		return $this->getCommand('UploadProject', [
 			'writerId' => $writerId,
 			'incrementalLoad' => $incrementalLoad,
 			'queue' => $queue
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -509,12 +533,12 @@ class Client extends GuzzleClient
 	 */
 	public function uploadProject($writerId, $incrementalLoad = null, $queue = 'primary')
 	{
-		$batch = $this->uploadProjectAsync($writerId, $incrementalLoad, $queue);
-		if (!isset($batch['url'])) {
-			throw new ServerException('Upload project batch returned unexpected result');
+		$job = $this->uploadProjectAsync($writerId, $incrementalLoad, $queue);
+		if (!isset($job['url'])) {
+			throw new ServerException('Upload project job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
-		return $this->waitForJob($batch['url']);
+		return $this->waitForJob($job['url']);
 	}
 
 	/**
@@ -527,12 +551,12 @@ class Client extends GuzzleClient
 	 */
 	public function uploadTableAsync($writerId, $tableId, $incrementalLoad = null, $queue = 'primary')
 	{
-		return $this->getCommand('UploadTable', array(
+		return $this->getCommand('UploadTable', [
 			'writerId' => $writerId,
 			'tableId' => $tableId,
 			'incrementalLoad' => $incrementalLoad,
 			'queue' => $queue
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -546,12 +570,12 @@ class Client extends GuzzleClient
 	 */
 	public function uploadTable($writerId, $tableId, $incrementalLoad = null, $queue = 'primary')
 	{
-		$batch = $this->uploadTableAsync($writerId, $tableId, $incrementalLoad, $queue);
-		if (!isset($batch['url'])) {
-			throw new ServerException('Upload table job returned unexpected result');
+		$job = $this->uploadTableAsync($writerId, $tableId, $incrementalLoad, $queue);
+		if (!isset($job['url'])) {
+			throw new ServerException('Upload table job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
-		return $this->waitForJob($batch['url']);
+		return $this->waitForJob($job['url']);
 	}
 
 	/**
@@ -563,11 +587,11 @@ class Client extends GuzzleClient
 	 */
 	public function updateModelAsync($writerId, $tableId, $queue = 'primary')
 	{
-		return $this->getCommand('UpdateModel', array(
+		return $this->getCommand('UpdateModel', [
 			'writerId' => $writerId,
 			'tableId' => $tableId,
 			'queue' => $queue
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -580,12 +604,12 @@ class Client extends GuzzleClient
 	 */
 	public function updateModel($writerId, $tableId, $queue = 'primary')
 	{
-		$batch = $this->updateModelAsync($writerId, $tableId, $queue);
-		if (!isset($batch['url'])) {
-			throw new ServerException('Update model job returned unexpected result');
+		$job = $this->updateModelAsync($writerId, $tableId, $queue);
+		if (!isset($job['url'])) {
+			throw new ServerException('Update model job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
-		return $this->waitForJob($batch['url']);
+		return $this->waitForJob($job['url']);
 	}
 
 	/**
@@ -598,12 +622,12 @@ class Client extends GuzzleClient
 	 */
 	public function loadDataAsync($writerId, array $tables, $incrementalLoad = null, $queue = 'primary')
 	{
-		return $this->getCommand('LoadData', array(
+		return $this->getCommand('LoadData', [
 			'writerId' => $writerId,
 			'tables' => $tables,
 			'incrementalLoad' => $incrementalLoad,
 			'queue' => $queue
-		))->execute();
+		])->execute();
 	}
 
 	/**
@@ -617,14 +641,14 @@ class Client extends GuzzleClient
 	 */
 	public function loadData($writerId, array $tables, $incrementalLoad = null, $queue = 'primary')
 	{
-		$batch = $this->loadDataAsync($writerId, $tables, $incrementalLoad, $queue);
-		if (!isset($batch['url'])) {
-			throw new ServerException('Load data job returned unexpected result');
+		$job = $this->loadDataAsync($writerId, $tables, $incrementalLoad, $queue);
+		if (!isset($job['url'])) {
+			throw new ServerException('Load data job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
 		}
 
-		return $this->waitForJob($batch['url']);
+		return $this->waitForJob($job['url']);
 	}
-	
+
 
 	/**
 	 * Return list of jobs for given writerId
@@ -633,46 +657,9 @@ class Client extends GuzzleClient
 	 */
 	public function getJobs($writerId)
 	{
-		return $this->getCommand('JobsList', array(
+		return $this->getCommand('JobsList', [
 			'writerId' => $writerId
-		))->execute();
-	}
-
-	/**
-	 * Return list of jobs for given writerId
-	 * @param $writerId
-	 * @return mixed
-	 * @deprecated
-	 */
-	public function jobs($writerId)
-	{
-		return $this->getJobs($writerId);
-	}
-
-	/**
-	 * Return detail of given batch
-	 * @param $writerId
-	 * @param $batchId
-	 * @return mixed
-	 */
-	public function getBatch($writerId, $batchId)
-	{
-		return $this->getCommand('BatchStatus', array(
-			'batchId' => (int)$batchId,
-			'writerId' => $writerId
-		))->execute();
-	}
-
-	/**
-	 * Return detail of given batch
-	 * @param $batchId
-	 * @param $writerId
-	 * @return mixed
-	 * @deprecated
-	 */
-	public function batch($writerId, $batchId)
-	{
-		return $this->getBatch($writerId, $batchId);
+		])->execute();
 	}
 
 	/**
@@ -689,21 +676,9 @@ class Client extends GuzzleClient
 		))->execute();
 	}
 
-	/**
-	 * Return detail of given job
-	 * @param $jobId
-	 * @param $writerId
-	 * @return mixed
-	 * @deprecated
-	 */
-	public function job($writerId, $jobId)
-	{
-		return $this->getJob($writerId, $jobId);
-	}
-
 
 	/**
-	 * Ask repeatedly for job or batch status until it is finished
+	 * Ask repeatedly for job status until it is finished
 	 * @param $url
 	 * @return \Guzzle\Http\Message\RequestInterface
 	 */
