@@ -1,5 +1,4 @@
 <?php
-
 namespace Keboola\Backoff;
 
 use Guzzle\Http\Message\RequestInterface;
@@ -13,26 +12,26 @@ use Guzzle\Plugin\Backoff\BackoffStrategyInterface;
  */
 class TruncatedBackoffStrategy extends AbstractBackoffStrategy
 {
-	/** @var int Maximum number of retries per request */
-	protected $max;
+    /** @var int Maximum number of retries per request */
+    protected $max;
 
-	/**
-	 * @param int                      $maxRetries Maximum number of retries per request
-	 * @param BackoffStrategyInterface $next The optional next strategy
-	 */
-	public function __construct($maxRetries, BackoffStrategyInterface $next = null)
-	{
-		$this->max = $maxRetries;
-		$this->next = $next;
-	}
+    /**
+     * @param int                      $maxRetries Maximum number of retries per request
+     * @param BackoffStrategyInterface $next The optional next strategy
+     */
+    public function __construct($maxRetries, BackoffStrategyInterface $next = null)
+    {
+        $this->max = $maxRetries;
+        $this->next = $next;
+    }
 
-	public function makesDecision()
-	{
-		return true;
-	}
+    public function makesDecision()
+    {
+        return true;
+    }
 
-	protected function getDelay($retries, RequestInterface $request, Response $response = null, HttpException $e = null)
-	{
-		return (($response && $response->getStatusCode() == 503) || $retries < $this->max) ? null : false;
-	}
+    protected function getDelay($retries, RequestInterface $request, Response $response = null, HttpException $e = null)
+    {
+        return (($response && $response->getStatusCode() == 503) || $retries < $this->max) ? null : false;
+    }
 }

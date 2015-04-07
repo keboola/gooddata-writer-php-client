@@ -4,377 +4,377 @@
     "baseUrl": "https://syrup.keboola.com/gooddata-writer",
     "description": "Keboola GoodData Writer API PHP Client",
     "operations": {
-		"GetWriters": {
-			"httpMethod": "GET",
-			"uri": "writers",
-			"summary": "Get list of configured writers"
-		},
-		"CreateWriter": {
-			"httpMethod": "POST",
-			"uri": "writers",
-			"summary": "Create writer",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"users": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"accessToken": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
-		"CreateWriterWithProject": {
-			"httpMethod": "POST",
-			"uri": "writers",
-			"summary": "Create writer with existing GoodData project",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"pid": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"username": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"password": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"users": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
-		"DeleteWriter": {
-			"httpMethod": "DELETE",
-			"uri": "writers?writerId={writerId}",
-			"summary": "Delete writer",
-			"parameters": {
-				"writerId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"GetUsers": {
-			"httpMethod": "GET",
-			"uri": "users?writerId={writerId}",
-			"summary": "Get list of configured users",
-			"parameters": {
-				"writerId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"CreateUser": {
-			"httpMethod": "POST",
-			"uri": "users",
-			"summary": "Create user",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"email": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"password": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"firstName": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"lastName": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"queue": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
-		"GetProjects": {
-			"httpMethod": "GET",
-			"uri": "projects?writerId={writerId}",
-			"summary": "Get list of configured project clones",
-			"parameters": {
-				"writerId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"CreateProject": {
-			"httpMethod": "POST",
-			"uri": "projects",
-			"summary": "Create project",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"name": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"accessToken": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"queue": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
-		"GetProjectUsers": {
-			"httpMethod": "GET",
-			"uri": "project-users?writerId={writerId}&pid={pid}",
-			"summary": "Get list of users added to specific project clone",
-			"parameters": {
-				"writerId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				},
-				"pid": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"AddUserToProject": {
-			"httpMethod": "POST",
-			"uri": "project-users",
-			"summary": "Add user to project",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"pid": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"email": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"role": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"queue": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
-		"GetSSOLink": {
-			"httpMethod": "GET",
-			"uri": "sso?writerId={writerId}&pid={pid}&email={email}",
-			"summary": "Generate SSO link to GD project for specified user",
-			"parameters": {
-				"writerId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				},
-				"pid": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				},
-				"email": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"GetTables": {
-			"httpMethod": "GET",
-			"uri": "tables?writerId={writerId}",
-			"summary": "Get tables list",
-			"parameters": {
-				"writerId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"GetTable": {
-			"httpMethod": "GET",
-			"uri": "tables?writerId={writerId}&tableId={tableId}",
-			"summary": "Get table configuration",
-			"parameters": {
-				"writerId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				},
-				"tableId": {
-					"location": "uri",
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"UpdateTable": {
-			"httpMethod": "POST",
-			"uri": "tables",
-			"summary": "Update table configuration",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"tableId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"name": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"export": {
-					"location": "json",
-					"type": "integer",
-					"required": false
-				},
-				"incrementalLoad": {
-					"location": "json",
-					"type": "integer",
-					"required": false
-				},
-				"ignoreFilter": {
-					"location": "json",
-					"type": "integer",
-					"required": false
-				}
-			}
-		},
-		"UpdateTableColumn": {
-			"httpMethod": "POST",
-			"uri": "tables",
-			"summary": "Update table column configuration",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"tableId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"column": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"gdName": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"type": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"reference": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"schemaReference": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"format": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				},
-				"dateDimension": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
-		"UpdateTableColumns": {
-			"httpMethod": "POST",
-			"uri": "tables",
-			"summary": "Update table columns configuration",
-			"parameters": {
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"tableId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"columns": {
-					"location": "json",
-					"type": "array",
-					"required": true
-				}
-			}
-		},
-		"UploadProject": {
+        "GetWriters": {
+            "httpMethod": "GET",
+            "uri": "writers",
+            "summary": "Get list of configured writers"
+        },
+        "CreateWriter": {
+            "httpMethod": "POST",
+            "uri": "writers",
+            "summary": "Create writer",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "users": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "accessToken": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "CreateWriterWithProject": {
+            "httpMethod": "POST",
+            "uri": "writers",
+            "summary": "Create writer with existing GoodData project",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "pid": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "username": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "password": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "users": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "DeleteWriter": {
+            "httpMethod": "DELETE",
+            "uri": "writers?writerId={writerId}",
+            "summary": "Delete writer",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "GetUsers": {
+            "httpMethod": "GET",
+            "uri": "users?writerId={writerId}",
+            "summary": "Get list of configured users",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "CreateUser": {
+            "httpMethod": "POST",
+            "uri": "users",
+            "summary": "Create user",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "email": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "password": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "firstName": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "lastName": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "queue": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "GetProjects": {
+            "httpMethod": "GET",
+            "uri": "projects?writerId={writerId}",
+            "summary": "Get list of configured project clones",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "CreateProject": {
+            "httpMethod": "POST",
+            "uri": "projects",
+            "summary": "Create project",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "name": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "accessToken": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "queue": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "GetProjectUsers": {
+            "httpMethod": "GET",
+            "uri": "project-users?writerId={writerId}&pid={pid}",
+            "summary": "Get list of users added to specific project clone",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                },
+                "pid": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "AddUserToProject": {
+            "httpMethod": "POST",
+            "uri": "project-users",
+            "summary": "Add user to project",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "pid": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "email": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "role": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "queue": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "GetSSOLink": {
+            "httpMethod": "GET",
+            "uri": "sso?writerId={writerId}&pid={pid}&email={email}",
+            "summary": "Generate SSO link to GD project for specified user",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                },
+                "pid": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                },
+                "email": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "GetTables": {
+            "httpMethod": "GET",
+            "uri": "tables?writerId={writerId}",
+            "summary": "Get tables list",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "GetTable": {
+            "httpMethod": "GET",
+            "uri": "tables?writerId={writerId}&tableId={tableId}",
+            "summary": "Get table configuration",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                },
+                "tableId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "UpdateTable": {
+            "httpMethod": "POST",
+            "uri": "tables",
+            "summary": "Update table configuration",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "tableId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "name": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "export": {
+                    "location": "json",
+                    "type": "integer",
+                    "required": false
+                },
+                "incrementalLoad": {
+                    "location": "json",
+                    "type": "integer",
+                    "required": false
+                },
+                "ignoreFilter": {
+                    "location": "json",
+                    "type": "integer",
+                    "required": false
+                }
+            }
+        },
+        "UpdateTableColumn": {
+            "httpMethod": "POST",
+            "uri": "tables",
+            "summary": "Update table column configuration",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "tableId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "column": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "gdName": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "type": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "reference": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "schemaReference": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "format": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                },
+                "dateDimension": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "UpdateTableColumns": {
+            "httpMethod": "POST",
+            "uri": "tables",
+            "summary": "Update table columns configuration",
+            "parameters": {
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "tableId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "columns": {
+                    "location": "json",
+                    "type": "array",
+                    "required": true
+                }
+            }
+        },
+        "UploadProject": {
             "httpMethod": "POST",
             "uri": "upload-project",
             "summary": "Upload whole project to GoodData",
@@ -384,16 +384,16 @@
                     "type": "string",
                     "required": true
                 },
-				"incrementalLoad": {
-					"location": "json",
-					"type": "integer",
-					"required": false
-				},
-				"queue": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
+                "incrementalLoad": {
+                    "location": "json",
+                    "type": "integer",
+                    "required": false
+                },
+                "queue": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
             }
         },
         "UploadTable": {
@@ -416,62 +416,62 @@
                     "type": "integer",
                     "required": false
                 },
-				"queue": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
+                "queue": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
             }
         },
-		"UpdateModel": {
-			"httpMethod": "POST",
-			"uri": "update-model",
-			"summary": "Update model of table in GoodData",
-			"parameters": {
-				"tableId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"queue": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
-		"LoadData": {
-			"httpMethod": "POST",
-			"uri": "load-data",
-			"summary": "Load data to table in GoodData",
-			"parameters": {
-				"tables": {
-					"location": "json",
-					"type": "array",
-					"required": true
-				},
-				"writerId": {
-					"location": "json",
-					"type": "string",
-					"required": true
-				},
-				"incrementalLoad": {
-					"location": "json",
-					"type": "integer",
-					"required": false
-				},
-				"queue": {
-					"location": "json",
-					"type": "string",
-					"required": false
-				}
-			}
-		},
+        "UpdateModel": {
+            "httpMethod": "POST",
+            "uri": "update-model",
+            "summary": "Update model of table in GoodData",
+            "parameters": {
+                "tableId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "queue": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "LoadData": {
+            "httpMethod": "POST",
+            "uri": "load-data",
+            "summary": "Load data to table in GoodData",
+            "parameters": {
+                "tables": {
+                    "location": "json",
+                    "type": "array",
+                    "required": true
+                },
+                "writerId": {
+                    "location": "json",
+                    "type": "string",
+                    "required": true
+                },
+                "incrementalLoad": {
+                    "location": "json",
+                    "type": "integer",
+                    "required": false
+                },
+                "queue": {
+                    "location": "json",
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
         "JobsList": {
             "httpMethod": "GET",
             "uri": "jobs",
