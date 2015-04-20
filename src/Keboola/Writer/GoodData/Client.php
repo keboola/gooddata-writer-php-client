@@ -85,6 +85,17 @@ class Client extends GuzzleClient
     }
 
     /**
+     * Get writer data
+     * @param $writerId
+     * @return mixed
+     */
+    public function getWriter($writerId)
+    {
+        $result = $this->getCommand('GetWriter', ['writerId' => $writerId])->execute();
+        return $result['writer'];
+    }
+
+    /**
      * Create writer
      * @param $writerId
      * @param array $users
@@ -679,9 +690,9 @@ class Client extends GuzzleClient
     /**
      * Ask repeatedly for job status until it is finished
      * @param $url
-     * @return \Guzzle\Http\Message\RequestInterface
+     * @return array
      */
-    protected function waitForJob($url)
+    public function waitForJob($url)
     {
         $jobFinished = false;
         $i = 1;

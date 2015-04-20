@@ -9,6 +9,18 @@
             "uri": "writers",
             "summary": "Get list of configured writers"
         },
+        "GetWriter": {
+            "httpMethod": "GET",
+            "uri": "writers?writerId={writerId}",
+            "summary": "Get writer info",
+            "parameters": {
+                "writerId": {
+                    "location": "uri",
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
         "CreateWriter": {
             "httpMethod": "POST",
             "uri": "writers",
