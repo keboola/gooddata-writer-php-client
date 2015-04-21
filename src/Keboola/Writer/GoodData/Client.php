@@ -663,27 +663,33 @@ class Client extends GuzzleClient
     /**
      * Return list of jobs for given writerId
      * @param $writerId
+     * @param null $since
+     * @param null $until
      * @return mixed
      */
-    public function getJobs($writerId)
+    public function getJobs($writerId, $since=null, $until=null)
     {
-        return $this->getCommand('JobsList', [
-            'writerId' => $writerId
-        ])->execute();
+        $url = parse_url($this->getBaseUrl());
+        $componentName = substr($url['path'], 1);
+        $url = "https://{$url['host']}/queue/jobs?component={$componentName}&q=params.writerId={$writerId}";
+        if ($since) {
+            $url .= '&since=' . urlencode($since);
+        }
+        if ($until) {
+            $url .= '&until=' . urlencode($until);
+        }
+        return $this->get($url)->send()->json();
     }
 
     /**
      * Return detail of given job
      * @param $jobId
-     * @param $writerId
      * @return mixed
      */
-    public function getJob($writerId, $jobId)
+    public function getJob($jobId)
     {
-        return $this->getCommand('JobStatus', [
-            'jobId' => (int)$jobId,
-            'writerId' => $writerId
-        ])->execute();
+        $url = parse_url($this->getBaseUrl());
+        return $this->get("https://{$url['host']}/queue/job/{$jobId}")->send()->json();
     }
 
 

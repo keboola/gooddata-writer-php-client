@@ -293,4 +293,18 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
             }
         }
     }
+
+    public function testJobs()
+    {
+        $job = $this->client->loadDataAsync(FUNCTIONAL_WRITER_ID, array('out.c-main.categories', 'out.c-main.products'));
+        $this->assertArrayHasKey('id', $job);
+
+        $result = $this->client->getJob($job['id']);
+        $this->assertArrayHasKey('status', $result);
+        $this->assertArrayHasKey('component', $result);
+        $this->assertArrayHasKey('id', $result);
+
+        $result = $this->client->getJobs(FUNCTIONAL_WRITER_ID);
+        $this->assertGreaterThanOrEqual(1, $result);
+    }
 }
