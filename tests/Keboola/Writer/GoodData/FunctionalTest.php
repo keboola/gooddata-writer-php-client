@@ -17,14 +17,14 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->client = \Keboola\Writer\GoodData\Client::factory(array(
+        $this->client = \Keboola\Writer\GoodData\Client::factory([
             'url' => GOODDATA_WRITER_API_URL,
             'token' => STORAGE_API_TOKEN
-        ));
+        ]);
 
         foreach ($this->client->getWriters() as $writer) {
-            if ($writer['id'] != FUNCTIONAL_WRITER_ID) {
-                $this->client->deleteWriter($writer['id']);
+            if ($writer['writerId'] != FUNCTIONAL_WRITER_ID) {
+                $this->client->deleteWriter($writer['writerId']);
             }
         }
     }
@@ -76,11 +76,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $newColumnName = uniqid();
 
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $newName);
-        $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $column['name'], array('gdName' => $newColumnName));
+        $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $column['name'], ['gdName' => $newColumnName]);
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
 
         $this->assertEquals($newName, $result['table']['name'], 'Table out.c-main.products should have new name');
-        $column = array();
+        $column = [];
         foreach ($result['table']['columns'] as $c) {
             if ($c['name'] == $columnId) {
                 $column = $c;
@@ -89,11 +89,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($newColumnName, $column['gdName'], 'Table out.c-main.products should have column with new name');
 
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $oldName);
-        $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, array(array('name' => $column['name'], 'gdName' => $oldColumnName)));
+        $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, [['name' => $column['name'], 'gdName' => $oldColumnName]]);
 
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
         $this->assertEquals($oldName, $result['table']['name'], 'Table out.c-main.products should have old name back');
-        $column = array();
+        $column = [];
         foreach ($result['table']['columns'] as $c) {
             if ($c['name'] == $columnId) {
                 $column = $c;
@@ -146,10 +146,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('columns', $table['table']);
         $this->assertGreaterThanOrEqual(1, $table['table']['columns']);
         $this->assertEquals($tableName, $table['table']['name']);
-        $this->assertArrayHasKey('name', $table['table']['columns'][0]);
-        $this->assertArrayHasKey('gdName', $table['table']['columns'][0]);
-        $columnName = $table['table']['columns'][0]['name'];
-        $columnTitle = $table['table']['columns'][0]['gdName'];
+        $this->assertArrayHasKey('id', $table['table']['columns']);
+        $this->assertArrayHasKey('name', $table['table']['columns']['id']);
+        $this->assertArrayHasKey('gdName', $table['table']['columns']['id']);
+        $columnName = $table['table']['columns']['id']['name'];
+        $columnTitle = $table['table']['columns']['id']['gdName'];
 
         $newTableName = uniqid();
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $newTableName);
@@ -160,10 +161,10 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $newColumnTitle = uniqid();
         $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $columnName, ['gdName' => $newColumnTitle]);
         $table = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        $this->assertEquals($newColumnTitle, $table['table']['columns'][0]['gdName']);
+        $this->assertEquals($newColumnTitle, $table['table']['columns']['id']['gdName']);
         $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, [['name' => $columnName, 'gdName' => $columnTitle]]);
         $table = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        $this->assertEquals($columnTitle, $table['table']['columns'][0]['gdName']);
+        $this->assertEquals($columnTitle, $table['table']['columns']['id']['gdName']);
     }
 
     public function testUpload()
@@ -180,7 +181,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('status', $result, "Result of API call 'update-model' should contain 'status' key");
         $this->assertEquals('success', $result['status'], "Result of API call 'update-model' should contain 'status' key with value 'success'");
 
-        $result = $this->client->loadData(FUNCTIONAL_WRITER_ID, array('out.c-main.categories', 'out.c-main.products'));
+        $result = $this->client->loadData(FUNCTIONAL_WRITER_ID, ['out.c-main.categories', 'out.c-main.products']);
         $this->assertArrayHasKey('status', $result, "Result of API call 'load-data' should contain 'status' key");
         $this->assertEquals('success', $result['status'], "Result of API call 'load-data' should contain 'status' key with value 'success'");
     }
@@ -296,7 +297,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function testJobs()
     {
-        $job = $this->client->loadDataAsync(FUNCTIONAL_WRITER_ID, array('out.c-main.categories', 'out.c-main.products'));
+        $job = $this->client->loadDataAsync(FUNCTIONAL_WRITER_ID, ['out.c-main.categories', 'out.c-main.products']);
         $this->assertArrayHasKey('id', $job);
 
         $result = $this->client->getJob($job['id']);
