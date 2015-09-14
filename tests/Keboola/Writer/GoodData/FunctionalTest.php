@@ -6,8 +6,6 @@
  */
 namespace Keboola\Writer\GoodData;
 
-require_once 'config.php';
-
 class FunctionalTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -39,7 +37,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         foreach ($result['tables'] as $t) {
             $this->assertArrayHasKey('id', $t, "Configured table of GET API call /tables should contain 'id' key");
             $this->assertArrayHasKey('bucket', $t, "Configured table of GET API call /tables should contain 'bucket' key");
-            $this->assertArrayHasKey('name', $t, "Configured table of GET API call /tables should contain 'name' key");
+            $this->assertTrue(isset($t['name']) || isset($t['title']), "Configured table of GET API call /tables should contain 'name' or 'title' key");
             $this->assertArrayHasKey('export', $t, "Configured table of GET API call /tables should contain 'export' key");
             $this->assertArrayHasKey('isExported', $t, "Configured table of GET API call /tables should contain 'isExported' key");
             $this->assertArrayHasKey('lastChangeDate', $t, "Configured table of GET API call /tables should contain 'lastChangeDate' key");
@@ -57,7 +55,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
         $this->assertArrayHasKey('table', $result, "Result of GET API call /tables?tableId= should contain 'table' key");
         $this->assertArrayHasKey('id', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.id' key");
-        $this->assertArrayHasKey('name', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.name' key");
+        $this->assertTrue(isset($result['table']['name']) || isset($result['table']['title']), "Configured table of GET API call /tables?tableId= should contain 'name' or 'title' key");
         $this->assertArrayHasKey('export', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.export' key");
         $this->assertArrayHasKey('isExported', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.isExported' key");
         $this->assertArrayHasKey('lastChangeDate', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.lastChangeDate' key");
@@ -69,7 +67,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('gdName', $column, "Result of GET API call /tables?tableId= should contain column with 'gdName' key");
         $this->assertArrayHasKey('type', $column, "Result of GET API call /tables?tableId= should contain column with 'type' key");
 
-        $oldName = $result['table']['name'];
+        $oldName = isset($result['table']['title']) ? $result['table']['title'] : $result['table']['name'];
         $newName = uniqid();
         $columnId = $column['name'];
         $oldColumnName = $column['gdName'];
@@ -79,7 +77,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $column['name'], ['gdName' => $newColumnName]);
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
 
-        $this->assertEquals($newName, $result['table']['name'], 'Table out.c-main.products should have new name');
+        if (isset($result['table']['name'])) {
+            $this->assertEquals($newName, $result['table']['name'], 'Table out.c-main.products should have new name');
+        } else {
+            $this->assertEquals($newName, $result['table']['title'], 'Table out.c-main.products should have new name');
+        }
         $column = [];
         foreach ($result['table']['columns'] as $c) {
             if ($c['name'] == $columnId) {
@@ -92,7 +94,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, [['name' => $column['name'], 'gdName' => $oldColumnName]]);
 
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        $this->assertEquals($oldName, $result['table']['name'], 'Table out.c-main.products should have old name back');
+        if (isset($result['table']['name'])) {
+            $this->assertEquals($oldName, $result['table']['name'], 'Table out.c-main.products should have old name back');
+        } else {
+            $this->assertEquals($oldName, $result['table']['title'], 'Table out.c-main.products should have old name back');
+        }
         $column = [];
         foreach ($result['table']['columns'] as $c) {
             if ($c['name'] == $columnId) {
@@ -133,19 +139,23 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThanOrEqual(1, $tables['tables']);
         $this->assertArrayHasKey('id', $tables['tables'][0]);
         $this->assertArrayHasKey('bucket', $tables['tables'][0]);
-        $this->assertArrayHasKey('name', $tables['tables'][0]);
+        $this->assertTrue(isset($tables['tables'][0]['name']) || isset($tables['tables'][0]['title']));
         $this->assertArrayHasKey('identifier', $tables['tables'][0]);
 
         $tableId = $tables['tables'][0]['id'];
-        $tableName = $tables['tables'][0]['name'];
+        $tableName = isset($tables['tables'][0]['name']) ? $tables['tables'][0]['name'] : $tables['tables'][0]['title'];
 
         $table = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
         $this->assertArrayHasKey('table', $table);
         $this->assertArrayHasKey('id', $table['table']);
-        $this->assertArrayHasKey('name', $table['table']);
+        $this->assertTrue(isset($table['table']['name']) || isset($table['table']['title']));
         $this->assertArrayHasKey('columns', $table['table']);
         $this->assertGreaterThanOrEqual(1, $table['table']['columns']);
-        $this->assertEquals($tableName, $table['table']['name']);
+        if (isset($table['table']['name'])) {
+            $this->assertEquals($tableName, $table['table']['name']);
+        } else {
+            $this->assertEquals($tableName, $table['table']['title']);
+        }
         $this->assertArrayHasKey('id', $table['table']['columns']);
         $this->assertArrayHasKey('name', $table['table']['columns']['id']);
         $this->assertArrayHasKey('gdName', $table['table']['columns']['id']);
@@ -155,7 +165,11 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $newTableName = uniqid();
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $newTableName);
         $table = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        $this->assertEquals($newTableName, $table['table']['name']);
+        if (isset($table['table']['name'])) {
+            $this->assertEquals($newTableName, $table['table']['name']);
+        } else {
+            $this->assertEquals($newTableName, $table['table']['title']);
+        }
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $tableName);
 
         $newColumnTitle = uniqid();
