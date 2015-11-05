@@ -6,6 +6,8 @@
  */
 namespace Keboola\Writer\GoodData;
 
+use Guzzle\Http\Exception\ClientErrorResponseException;
+
 class FunctionalTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -321,5 +323,38 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->client->getJobs(FUNCTIONAL_WRITER_ID);
         $this->assertGreaterThanOrEqual(1, $result);
+    }
+
+    public function testProjectAccess()
+    {
+        $writer = $this->client->getWriter(FUNCTIONAL_WRITER_ID);
+        $this->assertArrayHasKey('gd', $writer);
+        $this->assertArrayHasKey('pid', $writer['gd']);
+
+        try {
+            $this->client->disableProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
+        } catch (ClientErrorResponseException $e) {
+            echo $e->getResponse()->getBody(true).PHP_EOL.PHP_EOL;die();
+        }
+
+        try {
+            $this->client->getProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
+            $this->fail();
+        } catch (ClientErrorResponseException $e) {
+        }
+
+        $this->client->enableProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
+
+        $result = $this->client->getProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
+        $this->assertNotEmpty($result);
+        $this->assertStringStartsWith('https://secure.gooddata.com/', $result);
+
+        $this->client->disableProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
+
+        try {
+            $this->client->getProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
+            $this->fail();
+        } catch (ClientErrorResponseException $e) {
+        }
     }
 }

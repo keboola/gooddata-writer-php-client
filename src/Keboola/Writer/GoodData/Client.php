@@ -715,4 +715,24 @@ class Client extends GuzzleClient
 
         return $jobInfo;
     }
+
+    public function enableProjectAccess($writerId, $pid)
+    {
+        $this->post("/gooddata-writer/v2/{$writerId}/projects/{$pid}/access")->send();
+    }
+
+    public function disableProjectAccess($writerId, $pid)
+    {
+        $this->delete("/gooddata-writer/v2/{$writerId}/projects/{$pid}/access")->send();
+    }
+
+    public function getProjectAccess($writerId, $pid)
+    {
+        $result = $this->get("/gooddata-writer/v2/{$writerId}/projects/{$pid}/access")->send()->json();
+        if (!isset($result['link'])) {
+            throw new ServerException("Get Project Access call returned unexpected result:"
+                . json_encode($result, JSON_PRETTY_PRINT));
+        }
+        return $result['link'];
+    }
 }
