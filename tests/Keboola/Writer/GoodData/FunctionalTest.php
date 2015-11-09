@@ -32,17 +32,16 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
     public function testConfiguration()
     {
         $result = $this->client->getTables(FUNCTIONAL_WRITER_ID);
-        $this->assertArrayHasKey('tables', $result, "Result of GET API call /tables should contain 'tables' key");
-        $this->assertCount(2, $result['tables'], "Result of GET API call /tables should return two configured tables");
+        $this->assertArrayHasKey('tables', $result);
+        $this->assertCount(2, $result['tables']);
         $categoriesFound = false;
         $productsFound = false;
         foreach ($result['tables'] as $t) {
-            $this->assertArrayHasKey('id', $t, "Configured table of GET API call /tables should contain 'id' key");
-            $this->assertArrayHasKey('bucket', $t, "Configured table of GET API call /tables should contain 'bucket' key");
-            $this->assertTrue(isset($t['name']) || isset($t['title']), "Configured table of GET API call /tables should contain 'name' or 'title' key");
-            $this->assertArrayHasKey('export', $t, "Configured table of GET API call /tables should contain 'export' key");
-            $this->assertArrayHasKey('isExported', $t, "Configured table of GET API call /tables should contain 'isExported' key");
-            $this->assertArrayHasKey('lastChangeDate', $t, "Configured table of GET API call /tables should contain 'lastChangeDate' key");
+            $this->assertArrayHasKey('id', $t);
+            $this->assertArrayHasKey('bucket', $t);
+            $this->assertTrue(isset($t['name']) || isset($t['title']));
+            $this->assertArrayHasKey('export', $t);
+            $this->assertArrayHasKey('isExported', $t);
             if ($t['id'] == 'out.c-main.categories') {
                 $categoriesFound = true;
             }
@@ -50,64 +49,55 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
                 $productsFound = true;
             }
         }
-        $this->assertTrue($categoriesFound, "Result of GET API call /tables should return configured table Categories");
-        $this->assertTrue($productsFound, "Result of GET API call /tables should return configured table Products");
+        $this->assertTrue($categoriesFound);
+        $this->assertTrue($productsFound);
 
         $tableId = 'out.c-main.products';
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        $this->assertArrayHasKey('table', $result, "Result of GET API call /tables?tableId= should contain 'table' key");
-        $this->assertArrayHasKey('id', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.id' key");
-        $this->assertTrue(isset($result['table']['name']) || isset($result['table']['title']), "Configured table of GET API call /tables?tableId= should contain 'name' or 'title' key");
-        $this->assertArrayHasKey('export', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.export' key");
-        $this->assertArrayHasKey('isExported', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.isExported' key");
-        $this->assertArrayHasKey('lastChangeDate', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.lastChangeDate' key");
-        $this->assertArrayHasKey('incrementalLoad', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.incrementalLoad' key");
-        $this->assertArrayHasKey('ignoreFilter', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.ignoreFilter' key");
-        $this->assertArrayHasKey('columns', $result['table'], "Result of GET API call /tables?tableId= should contain 'table.columns' key");
+        $this->assertArrayHasKey('table', $result);
+        $this->assertArrayHasKey('id', $result['table']);
+        $this->assertArrayHasKey('title', $result['table']);
+        $this->assertArrayHasKey('export', $result['table']);
+        $this->assertArrayHasKey('isExported', $result['table']);
+        $this->assertArrayHasKey('incrementalLoad', $result['table']);
+        $this->assertArrayHasKey('ignoreFilter', $result['table']);
+        $this->assertArrayHasKey('columns', $result['table']);
         $column = current($result['table']['columns']);
-        $this->assertArrayHasKey('name', $column, "Result of GET API call /tables?tableId= should contain column with 'name' key");
-        $this->assertArrayHasKey('gdName', $column, "Result of GET API call /tables?tableId= should contain column with 'gdName' key");
-        $this->assertArrayHasKey('type', $column, "Result of GET API call /tables?tableId= should contain column with 'type' key");
+        $this->assertArrayHasKey('name', $column);
+        $this->assertArrayHasKey('title', $column);
+        $this->assertArrayHasKey('type', $column);
 
-        $oldName = isset($result['table']['title']) ? $result['table']['title'] : $result['table']['name'];
+        $oldName = $result['table']['title'];
         $newName = uniqid();
         $columnId = $column['name'];
-        $oldColumnName = $column['gdName'];
+        $oldColumnName = $column['title'];
         $newColumnName = uniqid();
 
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $newName);
-        $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $column['name'], ['gdName' => $newColumnName]);
+        $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $column['name'], ['title' => $newColumnName]);
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
 
-        if (isset($result['table']['name'])) {
-            $this->assertEquals($newName, $result['table']['name'], 'Table out.c-main.products should have new name');
-        } else {
-            $this->assertEquals($newName, $result['table']['title'], 'Table out.c-main.products should have new name');
-        }
+        $this->assertEquals($newName, $result['table']['title']);
         $column = [];
         foreach ($result['table']['columns'] as $c) {
             if ($c['name'] == $columnId) {
                 $column = $c;
             }
         }
-        $this->assertEquals($newColumnName, $column['gdName'], 'Table out.c-main.products should have column with new name');
+        $this->assertEquals($newColumnName, $column['title']);
 
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $oldName);
-        $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, [['name' => $column['name'], 'gdName' => $oldColumnName]]);
+        $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, [['name' => $column['name'], 'title' => $oldColumnName]]);
 
         $result = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        if (isset($result['table']['name'])) {
-            $this->assertEquals($oldName, $result['table']['name'], 'Table out.c-main.products should have old name back');
-        } else {
-            $this->assertEquals($oldName, $result['table']['title'], 'Table out.c-main.products should have old name back');
-        }
+        $this->assertEquals($oldName, $result['table']['title'], 'Table out.c-main.products should have old name back');
         $column = [];
         foreach ($result['table']['columns'] as $c) {
             if ($c['name'] == $columnId) {
                 $column = $c;
             }
         }
-        $this->assertEquals($oldColumnName, $column['gdName'], 'Table out.c-main.products should have column with old name back');
+        $this->assertEquals($oldColumnName, $column['title']);
     }
 
     public function testProxy()
@@ -153,53 +143,45 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($table['table']['name']) || isset($table['table']['title']));
         $this->assertArrayHasKey('columns', $table['table']);
         $this->assertGreaterThanOrEqual(1, $table['table']['columns']);
-        if (isset($table['table']['name'])) {
-            $this->assertEquals($tableName, $table['table']['name']);
-        } else {
-            $this->assertEquals($tableName, $table['table']['title']);
-        }
+        $this->assertEquals($tableName, $table['table']['title']);
         $this->assertArrayHasKey('id', $table['table']['columns']);
         $this->assertArrayHasKey('name', $table['table']['columns']['id']);
-        $this->assertArrayHasKey('gdName', $table['table']['columns']['id']);
+        $this->assertArrayHasKey('title', $table['table']['columns']['id']);
         $columnName = $table['table']['columns']['id']['name'];
-        $columnTitle = $table['table']['columns']['id']['gdName'];
+        $columnTitle = $table['table']['columns']['id']['title'];
 
         $newTableName = uniqid();
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $newTableName);
         $table = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        if (isset($table['table']['name'])) {
-            $this->assertEquals($newTableName, $table['table']['name']);
-        } else {
-            $this->assertEquals($newTableName, $table['table']['title']);
-        }
+        $this->assertEquals($newTableName, $table['table']['title']);
         $this->client->updateTable(FUNCTIONAL_WRITER_ID, $tableId, $tableName);
 
         $newColumnTitle = uniqid();
-        $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $columnName, ['gdName' => $newColumnTitle]);
+        $this->client->updateTableColumn(FUNCTIONAL_WRITER_ID, $tableId, $columnName, ['title' => $newColumnTitle]);
         $table = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        $this->assertEquals($newColumnTitle, $table['table']['columns']['id']['gdName']);
-        $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, [['name' => $columnName, 'gdName' => $columnTitle]]);
+        $this->assertEquals($newColumnTitle, $table['table']['columns']['id']['title']);
+        $this->client->updateTableColumns(FUNCTIONAL_WRITER_ID, $tableId, [['name' => $columnName, 'title' => $columnTitle]]);
         $table = $this->client->getTable(FUNCTIONAL_WRITER_ID, $tableId);
-        $this->assertEquals($columnTitle, $table['table']['columns']['id']['gdName']);
+        $this->assertEquals($columnTitle, $table['table']['columns']['id']['title']);
     }
 
     public function testUpload()
     {
         $result = $this->client->uploadProject(FUNCTIONAL_WRITER_ID);
-        $this->assertArrayHasKey('status', $result, "Result of API call 'upload-project' should contain 'status' key");
-        $this->assertEquals('success', $result['status'], "Result of API call 'upload-project' should contain 'status' key with value 'success'");
+        $this->assertArrayHasKey('status', $result);
+        $this->assertEquals('success', $result['status']);
 
         $result = $this->client->uploadTable(FUNCTIONAL_WRITER_ID, 'out.c-main.categories');
-        $this->assertArrayHasKey('status', $result, "Result of API call 'upload-table' should contain 'status' key");
-        $this->assertEquals('success', $result['status'], "Result of API call 'upload-table' should contain 'status' key with value 'success'");
+        $this->assertArrayHasKey('status', $result);
+        $this->assertEquals('success', $result['status']);
 
         $result = $this->client->updateModel(FUNCTIONAL_WRITER_ID, 'out.c-main.categories');
-        $this->assertArrayHasKey('status', $result, "Result of API call 'update-model' should contain 'status' key");
-        $this->assertEquals('success', $result['status'], "Result of API call 'update-model' should contain 'status' key with value 'success'");
+        $this->assertArrayHasKey('status', $result);
+        $this->assertEquals('success', $result['status']);
 
         $result = $this->client->loadData(FUNCTIONAL_WRITER_ID, ['out.c-main.categories', 'out.c-main.products']);
-        $this->assertArrayHasKey('status', $result, "Result of API call 'load-data' should contain 'status' key");
-        $this->assertEquals('success', $result['status'], "Result of API call 'load-data' should contain 'status' key with value 'success'");
+        $this->assertArrayHasKey('status', $result);
+        $this->assertEquals('success', $result['status']);
     }
 
     public function testCreateUserAndProject()
@@ -210,15 +192,15 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
 
         $email = $projectId. '-test-functional-' . uniqid() . '@test.com';
         $result = $this->client->createUser($writerId, $email, uniqid(), 'functional', 'test user');
-        $this->assertArrayHasKey('uid', $result, "Result of createUser request should return uid of created user");
+        $this->assertArrayHasKey('uid', $result);
 
         $result = $this->client->createProject($writerId, '[Test] functional ' . uniqid());
-        $this->assertArrayHasKey('pid', $result, "Result of createProject request should return pid of created project");
+        $this->assertArrayHasKey('pid', $result);
         $pid = $result['pid'];
 
         $result = $this->client->addUserToProject($writerId, $pid, $email);
-        $this->assertArrayHasKey('status', $result, "Result of addUserToProject request should return status");
-        $this->assertEquals('success', $result['status'], "Result of addUserToProject request should contain 'status' key with value 'success'");
+        $this->assertArrayHasKey('status', $result);
+        $this->assertEquals('success', $result['status']);
 
         $result = $this->client->getUsers($writerId);
         $this->assertCount(2, $result);
@@ -334,7 +316,6 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         try {
             $this->client->disableProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
         } catch (ClientErrorResponseException $e) {
-            echo $e->getResponse()->getBody(true).PHP_EOL.PHP_EOL;die();
         }
 
         try {

@@ -432,20 +432,20 @@ class Client extends GuzzleClient
      * Update table configuration
      * @param $writerId
      * @param $tableId
-     * @param null $name
+     * @param null $title
      * @param null $export
      * @param null $incrementalLoad
      * @param null $ignoreFilter
      * @return mixed
      */
-    public function updateTable($writerId, $tableId, $name = null, $export = null, $incrementalLoad = null, $ignoreFilter = null)
+    public function updateTable($writerId, $tableId, $title = null, $export = null, $incrementalLoad = null, $ignoreFilter = null)
     {
         $params = [
             'writerId' => $writerId,
             'tableId' => $tableId
         ];
-        if ($name !== null) {
-            $params['name'] = $name;
+        if ($title !== null) {
+            $params['title'] = $title;
         }
         if ($export !== null) {
             $params['export'] = (bool)$export;
@@ -464,16 +464,16 @@ class Client extends GuzzleClient
      * @param $writerId
      * @param $tableId
      * @param $column
-     * @param array $configuration Array with keys: [gdName, type, reference, schemaReference, format, dateDimension]
+     * @param array $configuration Array with keys: [title, type, reference, schemaReference, format, dateDimension]
      * @throws ClientException
      * @return mixed
      */
     public function updateTableColumn($writerId, $tableId, $column, array $configuration)
     {
-        $allowedConfigurationOptions = ['gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension'];
+        $allowedConfigurationOptions = ['title', 'type', 'reference', 'schemaReference', 'format', 'dateDimension'];
         foreach ($configuration as $k => $v) {
             if (!in_array($k, $allowedConfigurationOptions)) {
-                throw new ClientException("Option '" . $k . "' is not allowed, choose from: " . implode(', ', $allowedConfigurationOptions));
+                throw new ClientException("Option '$k' is not allowed, choose from: " . implode(', ', $allowedConfigurationOptions));
             }
         }
 
@@ -490,20 +490,20 @@ class Client extends GuzzleClient
      * Update table columns configuration
      * @param $writerId
      * @param $tableId
-     * @param array $columns Array of arrays with keys: [name, gdName, type, reference, schemaReference, format, dateDimension]
+     * @param array $columns Array of arrays with keys: [name, title, type, reference, schemaReference, format, dateDimension]
      * @throws ClientException
      * @return mixed
      */
     public function updateTableColumns($writerId, $tableId, array $columns)
     {
-        $allowedConfigurationOptions = ['name', 'gdName', 'type', 'reference', 'schemaReference', 'format', 'dateDimension'];
+        $allowedConfigurationOptions = ['name', 'title', 'type', 'reference', 'schemaReference', 'format', 'dateDimension'];
         foreach ($columns as $column) {
             if (!isset($column['name'])) {
                 throw new ClientException("One of the columns is missing 'name' parameter");
             }
             foreach ($column as $k => $v) {
                 if (!in_array($k, $allowedConfigurationOptions)) {
-                    throw new ClientException("Option '" . $k . "' for column '" . $column . "' is not allowed, choose from: " . implode(', ', $allowedConfigurationOptions));
+                    throw new ClientException("Option '$k' for column '$column' is not allowed, choose from: " . implode(', ', $allowedConfigurationOptions));
                 }
             }
         }
@@ -667,7 +667,7 @@ class Client extends GuzzleClient
      * @param null $until
      * @return mixed
      */
-    public function getJobs($writerId, $since=null, $until=null)
+    public function getJobs($writerId, $since = null, $until = null)
     {
         $url = parse_url($this->getBaseUrl());
         $componentName = substr($url['path'], 1);
