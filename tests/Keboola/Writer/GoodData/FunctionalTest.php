@@ -225,7 +225,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($projectFound);
 
         $result = $this->client->getProjectUsers($writerId, $pid);
-        $this->assertCount(1, $result);
+        $this->assertCount(3, $result);
 
         $result = $this->client->getSsoLink($writerId, $pid, $email);
         $this->assertNotEmpty($result, "Result of getSsoLink request should contain link");
