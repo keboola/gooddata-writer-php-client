@@ -270,14 +270,6 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('status', $jobResult);
         $this->assertEquals('success', $jobResult['status']);
 
-        $result = $this->client->post('/gooddata-writer/sync-filters', null, json_encode([
-            'writerId' => FUNCTIONAL_WRITER_ID
-        ]))->send()->json();
-        $this->assertArrayHasKey('url', $result);
-        $jobResult = $this->client->waitForJob($result['url']);
-        $this->assertArrayHasKey('status', $jobResult);
-        $this->assertEquals('success', $jobResult['status']);
-
         $result = $this->client->delete('/gooddata-writer/filters?writerId='.FUNCTIONAL_WRITER_ID.'&name='.$filterName)->send()->json();
         $this->assertArrayHasKey('url', $result);
         $jobResult = $this->client->waitForJob($result['url']);
