@@ -321,6 +321,7 @@ class FunctionalTest extends \PHPUnit_Framework_TestCase
         $result = $this->client->getProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
         $this->assertNotEmpty($result);
         $this->assertStringStartsWith('https://secure.gooddata.com/', $result);
+        $this->assertStringEndsNotWith('#/info/ssoFailed', $result);
 
         $this->client->disableProjectAccess(FUNCTIONAL_WRITER_ID, $writer['gd']['pid']);
 
