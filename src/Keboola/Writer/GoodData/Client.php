@@ -98,40 +98,23 @@ class Client extends GuzzleClient
     /**
      * Create writer
      * @param $writerId
-     * @param array $users
-     * @param null $accessToken
+     * @param array $params
      * @return mixed
      */
-    public function createWriterAsync($writerId, $users = [], $accessToken = null)
+    public function createWriterAsync($writerId, $params = [])
     {
-        $params = [
-            'writerId' => $writerId,
-        ];
-
-        if (!empty($users)) {
-            $params['users'] = implode(',', $users);
-        }
-        if (!empty($accessToken)) {
-            $params['accessToken'] = $accessToken;
-        }
+        $params['writerId'] = $writerId;
         return $this->getCommand('CreateWriter', $params)->execute();
     }
 
     /**
      * Create writer and wait for finish
      * @param $writerId
-     * @param array $users
-     * @param null $accessToken
-     * @return \Guzzle\Http\Message\RequestInterface
-     * @throws ClientException
-     * @throws ServerException
+     * @param array $params
      */
-    public function createWriter($writerId, $users = [], $accessToken = null)
+    public function createWriter($writerId, $params = [])
     {
-        if ($users && !is_array($users)) {
-            throw new ClientException("Parameter 'users' must be array");
-        }
-        $job = $this->createWriterAsync($writerId, $users, $accessToken);
+        $job = $this->createWriterAsync($writerId, $params);
         if (!isset($job['url'])) {
             throw new ServerException('Create writer job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
         }
@@ -145,21 +128,16 @@ class Client extends GuzzleClient
      * @param $pid
      * @param $username
      * @param $password
-     * @param array $users
+     * @param array $params
      * @return mixed
      */
-    public function createWriterWithProjectAsync($writerId, $pid, $username, $password, $users = [])
+    public function createWriterWithProjectAsync($writerId, $pid, $username, $password, $params = [])
     {
-        $params = [
-            'writerId' => $writerId,
-            'pid' => $pid,
-            'username' => $username,
-            'password' => $password
-        ];
+        $params['writerId'] = $writerId;
+        $params['pid'] = $pid;
+        $params['username'] = $username;
+        $params['password'] = $password;
 
-        if (!empty($users)) {
-            $params['users'] = implode(',', $users);
-        }
         return $this->getCommand('CreateWriterWithProject', $params)->execute();
     }
 
@@ -169,17 +147,14 @@ class Client extends GuzzleClient
      * @param $pid
      * @param $username
      * @param $password
-     * @param array $users
+     * @param array $params
      * @return \Guzzle\Http\Message\RequestInterface
      * @throws ClientException
      * @throws ServerException
      */
-    public function createWriterWithProject($writerId, $pid, $username, $password, $users = [])
+    public function createWriterWithProject($writerId, $pid, $username, $password, $params = [])
     {
-        if ($users && !is_array($users)) {
-            throw new ClientException("Parameter 'users' must be array");
-        }
-        $job = $this->createWriterWithProjectAsync($writerId, $pid, $username, $password, $users);
+        $job = $this->createWriterWithProjectAsync($writerId, $pid, $username, $password, $params);
         if (!isset($job['url'])) {
             throw new ServerException('Create writer job returned unexpected result: ' . json_encode($job, JSON_PRETTY_PRINT));
         }
